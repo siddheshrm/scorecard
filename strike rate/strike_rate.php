@@ -5,11 +5,16 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Strike Rate Calculator</title>
-    <link rel="stylesheet" href="../css/strike_rate.css">
+    <!-- <link rel="stylesheet" href="../css/strike_rate.css"> -->
 </head>
 
 <body>
     <h2>Strike Rate Calculator</h2>
+
+    <p>
+        Batting strike rate (s/r) is defined for a batter as the average number of runs scored per 100 balls faced. The higher the strike rate, the more effective a batter is at scoring quickly.
+    </p>
+
     <form method="POST">
         <label for="balls">Balls Faced:</label>
         <input type="number" id="balls" name="balls" required><br><br>

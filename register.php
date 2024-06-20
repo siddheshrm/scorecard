@@ -9,19 +9,19 @@
 </head>
 
 <body>
-    <h2>Create your own scoreboard with <i>scorecard.com</i></h2>
+    <h2>Welcome to <i>scorecard.com</i></h2>
     <h3>Enter Details To Sign-up</h3>
     <form method="POST" action="register.php">
-        Name* <input type="text" name="name" required><br>
-        Age* <input type="number" name="age" required><br>
-        Email <input type="email" name="email"><br>
-        Favourite IPL Team <input type="text" name="favourite_ipl_team"><br>
-        Mobile Number <input type="text" name="mobile_number"><br>
-        Password* <input type="password" name="password" required><br>
+        Name* <input type="text" name="name" placeholder="minimum 5 characters" required><br><br>
+        Age* <input type="number" name="age" required><br><br>
+        Email <input type="email" name="email"><br><br>
+        Favourite IPL Team <input type="text" name="favourite_ipl_team"><br><br>
+        Mobile Number <input type="text" name="mobile_number"><br><br>
+        Password* <input type="password" name="password" placeholder="minimum 5 characters" required><br><br>
         <input type="submit" value="Submit">
     </form>
 
-    <p>Already have an account? <a href="index.php">Login</a></p>
+    <p>Already have an account? <a href="index.php">Login here</a></p>
 
     <?php
     if ($_SERVER["REQUEST_METHOD"] == "POST") {
