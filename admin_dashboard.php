@@ -93,8 +93,8 @@ $conn->close();
         ?>
     </table>
 
-    <p><a href="create.php">Insert New Match Data</a></p>
-    <p><a href="table.php">Update Existing Match Data</a></p>
+    <p><a href="create_match.php">Insert New Match Data</a></p>
+    <p><a href="view_matches.php">Update Existing Match Data</a></p>
     <p><a href="index.php">Logout</a></p>
 </body>
 
