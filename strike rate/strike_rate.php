@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Strike Rate Calculator</title>
+    <link rel="stylesheet" href="../css/strike_rate.css">
+</head>
+
+<body>
+    <h2>Strike Rate Calculator</h2>
+    <form method="POST">
+        <label for="balls">Balls Faced:</label>
+        <input type="number" id="balls" name="balls" required><br><br>
+
+        <label for="runs">Runs Scored:</label>
+        <input type="number" id="runs" name="runs" required><br><br>
+
+        <input type="submit" value="Calculate">
+    </form>
+
+    <?php
+    if ($_SERVER["REQUEST_METHOD"] == "POST") {
+        // Retrieve values from form submission
+        $balls = $_POST["balls"];
+        $runs = $_POST["runs"];
+
+        // Check if both values are provided
+        if (!empty($balls) && !empty($runs)) {
+            // Calculate strike rate
+            $strikeRate = ($runs / $balls) * 100;
+            echo "<p>Strike Rate: $strikeRate</p>";
+        } else {
+            echo "<p>Please fill in both fields.</p>";
+        }
+    }
+    ?>
+</body>
+
+</html>
