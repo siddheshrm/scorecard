@@ -6,6 +6,24 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Register here</title>
     <!-- <link rel="stylesheet" href="css/register.css"> -->
+
+    <script>
+        function fetchTrivia() {
+            const today = new Date().getDate();
+            fetch('https://cricket-trivia-api-2fa7961781d4.herokuapp.com/cricket_trivia')
+                .then(response => response.json())
+                .then(data => {
+                    const trivia = data.find(item => item.id === today);
+                    if (trivia) {
+                        document.getElementById('trivia').innerHTML = `<h3>Cricket Trivia for Today</h3><p><strong>${trivia.title}:</strong> ${trivia.description}</p>`;
+                    } else {
+                        document.getElementById('trivia').innerHTML = `<p>No trivia found for today.</p>`;
+                    }
+                })
+                .catch(error => console.error('Error fetching trivia:', error));
+        }
+    </script>
+
 </head>
 
 <body>
@@ -21,7 +39,33 @@
         <input type="submit" value="Submit">
     </form>
 
-    <p>Already have an account? <a href="index.php">Login here</a></p>
+    <p>Already have an account? <a href="index.php">Login here</a></p><br>
+
+    <?php
+    function fetchTrivia($id)
+    {
+        $url = "https://cricket-trivia-api-2fa7961781d4.herokuapp.com/cricket_trivia";
+        $data = file_get_contents($url);
+        $triviaArray = json_decode($data, true);
+
+        foreach ($triviaArray as $trivia) {
+            if ($trivia['id'] == $id) {
+                return $trivia;
+            }
+        }
+        return null;
+    }
+
+    $today = date("j"); // Day of the month without leading zeros
+    $trivia = fetchTrivia($today);
+
+    if ($trivia) {
+        echo "<h3>Cricket Trivia for Today</h3>";
+        echo "<p><strong>" . $trivia['title'] . ":</strong> " . $trivia['description'] . "</p>";
+    } else {
+        echo "<p>No trivia found for today.</p>";
+    }
+    ?>
 
     <?php
     if ($_SERVER["REQUEST_METHOD"] == "POST") {

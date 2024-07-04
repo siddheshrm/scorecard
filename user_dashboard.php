@@ -26,21 +26,23 @@ if ($result->num_rows > 0) {
 }
 
 // Query the database to fetch points table
-$sql = "SELECT team_name, 
-               SUM(wins + losses + no_result) AS matches_played,
-               SUM(wins) AS wins, 
-               SUM(losses) AS losses, 
-               SUM(no_result) AS no_result, 
-               SUM(points) AS points
+
+$sql_points = "SELECT team_name, 
+                SUM(wins + losses + no_result) AS matches_played,
+                wins AS wins, 
+                losses AS losses, 
+                no_result AS no_result, 
+                points AS points,
+                nrr AS nrr
         FROM teams
         GROUP BY team_name
-        ORDER BY points DESC, wins DESC";
+        ORDER BY points DESC, nrr DESC, wins DESC";
 
-$result = $conn->query($sql);
+$result_points = $conn->query($sql_points);
 
 $points_table = [];
-if ($result->num_rows > 0) {
-    while ($row = $result->fetch_assoc()) {
+if ($result_points->num_rows > 0) {
+    while ($row = $result_points->fetch_assoc()) {
         $points_table[] = $row;
     }
 } else {
@@ -67,12 +69,13 @@ $conn->close();
     <table>
         <tr>
             <th>Position</th>
-            <th>Team Name</th>
+            <th>Team</th>
             <th>Matches Played</th>
             <th>Wins</th>
             <th>Losses</th>
-            <th>No Result</th>
+            <th>Tie/No Result</th>
             <th>Points</th>
+            <th>NRR</th>
         </tr>
         <?php
         $position = 1;
@@ -85,6 +88,7 @@ $conn->close();
             echo "<td>" . $team['losses'] . "</td>";
             echo "<td>" . $team['no_result'] . "</td>";
             echo "<td>" . $team['points'] . "</td>";
+            echo "<td>" . $team['nrr'] . "</td>";
             echo "</tr>";
             $position++;
         }

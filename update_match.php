@@ -98,7 +98,7 @@
             echo "<div class='innings'>";
             echo "<h3>Innings Details</h3>";
             echo "<p>Inning 1: $batting_team</p>";
-            echo "<form action='submit_match_score.php' method='post'>";
+            echo "<form action='submit_score.php' method='post'>";
             echo "<input type='hidden' name='match_no' value='$match_no'>";
             echo "<label for='inning1_runs'>Runs Scored:</label>";
             echo "<input type='number' id='inning1_runs' name='inning1_runs' required>";
