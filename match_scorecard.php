@@ -19,23 +19,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             VALUES ('$date', '$home_team', '$away_team', '$venue', '$toss_won_by', '$decided_to')";
 
     if ($conn->query($sql) === TRUE) {
-        // Update matches_played for home_team
-        $update_home_team = "UPDATE teams SET matches_played = matches_played + 1 WHERE short_name = '$home_team'";
-        if ($conn->query($update_home_team) !== TRUE) {
-            echo "Error updating matches_played for home team: " . $conn->error;
-        }
-
-        // Update matches_played for away_team
-        $update_away_team = "UPDATE teams SET matches_played = matches_played + 1 WHERE short_name = '$away_team'";
-        if ($conn->query($update_away_team) !== TRUE) {
-            echo "Error updating matches_played for away team: " . $conn->error;
-        }
-
-        // Redirect to view_matches.php after successful submission and update
+        // Redirect to view_matches.php after successful submission
         header("Location: view_matches.php");
         exit(); // Stop further execution
     } else {
         echo "Error: " . $sql . "<br>" . $conn->error;
     }
 }
-?>

@@ -158,7 +158,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     $stmt_update_losses->close();
                 } elseif ($winning_team == NULL && $losing_team == NULL) {
                     // Update matches_played and no_result for both teams
-                    $stmt_update_tie = $conn->prepare("UPDATE teams SET no_result = no_result + 1, points = points + 1 WHERE short_name = ? OR short_name = ?");
+                    $stmt_update_tie = $conn->prepare("UPDATE teams SET matches_played = matches_played + 1, no_result = no_result + 1, points = points + 1 WHERE short_name = ? OR short_name = ?");
                     $stmt_update_tie->bind_param("ss", $home_team_short, $away_team_short);
                     $stmt_update_tie->execute();
                     $stmt_update_tie->close();
