@@ -1,0 +1,60 @@
+body {
+  font-family: Arial, sans-serif;
+  line-height: 1.6;
+  background-color: #f0f0f0;
+}
+
+h2 {
+  color: #333;
+  margin-bottom: 15px;
+}
+
+p {
+  color: #666;
+  margin-bottom: 10px;
+}
+
+/* Form styles */
+form {
+  margin-bottom: 20px;
+}
+
+label {
+  display: block;
+  margin-bottom: 5px;
+}
+
+input[type="number"],
+input[type="submit"] {
+  padding: 8px;
+  font-size: 16px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  margin-bottom: 10px;
+}
+
+input[type="submit"] {
+  background-color: #4caf50;
+  color: white;
+  cursor: pointer;
+}
+
+input[type="submit"]:hover {
+  background-color: #45a049;
+}
+
+/* Specific styles for DLS calculator */
+#teamARuns,
+#teamAWickets,
+#teamAOvers,
+#teamBRuns,
+#teamBWickets,
+#teamBOvers {
+  width: 100px;
+}
+
+/* Specific styles for Strike Rate calculator */
+#balls,
+#runs {
+  width: 100px;
+}

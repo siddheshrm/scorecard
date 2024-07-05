@@ -4,7 +4,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Duckworth-Lewis Stern Calculation</title>
+    <title>DLS Par Score Calculator</title>
+    <link rel="stylesheet" href="../css/common.css">
 </head>
 
 <body>
@@ -26,7 +27,8 @@
         <input type="number" id="teamAWickets" name="teamAWickets" min="0" max="10" value="<?php if (isset($_POST['teamAWickets'])) echo $_POST['teamAWickets']; ?>" required><br>
 
         <label for="teamAOvers">Team A Overs Completed:</label>
-        <input type="number" id="teamAOvers" name="teamAOvers" min="0" max="50" value="<?php if (isset($_POST['teamAOvers'])) echo $_POST['teamAOvers']; ?>" required><br><br>
+        <input type="number" id="teamAOvers" name="teamAOvers" min="0" max="50" value="<?php if (isset($_POST['teamAOvers'])) echo $_POST['teamAOvers']; ?>" required><br>
+        <hr>
 
         <label for="teamBRuns">Team B Runs Scored:</label>
         <input type="number" id="teamBRuns" name="teamBRuns" value="<?php if (isset($_POST['teamBRuns'])) echo $_POST['teamBRuns']; ?>"><br>
@@ -35,10 +37,15 @@
         <input type="number" id="teamBWickets" name="teamBWickets" min="0" max="10" value="<?php if (isset($_POST['teamBWickets'])) echo $_POST['teamBWickets']; ?>"><br>
 
         <label for="teamBOvers">Team B Overs Completed:</label>
-        <input type="number" id="teamBOvers" name="teamBOvers" min="0" max="50" value="<?php if (isset($_POST['teamBOvers'])) echo $_POST['teamBOvers']; ?>"><br><br>
+        <input type="number" id="teamBOvers" name="teamBOvers" min="0" max="50" value="<?php if (isset($_POST['teamBOvers'])) echo $_POST['teamBOvers']; ?>"><br>
 
-        <input type="submit" value="Calculate">
+        <input type="submit" value="Calculate Par Score">
     </form>
+
+    <p><a href="../index.php">Go to homepage</a></p><br>
+
+    <!-- Include Trivia -->
+    <?php include '../trivia.php'; ?>
 
     <?php
     if ($_SERVER["REQUEST_METHOD"] == "POST") {
