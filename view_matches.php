@@ -53,11 +53,12 @@
         }
         echo "</table>";
     } else {
-        echo "No data found.";
+        echo '<div style="text-align: center; font-size: 25px;">No data found.</div>';
     }
     ?>
     <p><a href="create_match.php">Insert Match Data</a></p>
     <p><a href="admin_dashboard.php">Dashboard</a></p>
+    <p><a href="index.php">Logout</a></p>
 
     <script>
         function updateMatch(matchNo) {

@@ -23,7 +23,7 @@
     <p><a href="register.php">Don't have an account?</a></p>
     <p><a href="#" onclick="showMessage()">Forgot Password?</a></p><br>
 
-    <p><a href="strike rate/strike_rate.php">Strike Rate Calculator</a></p>
+    <p><a href="strike_rate/strike_rate.php">Strike Rate Calculator</a></p>
     <p><a href="dls/dls_calculator.php">Duckworth-Lewis-Stern Par Score Calculator</a></p><br>
 
     <!-- Include Trivia -->

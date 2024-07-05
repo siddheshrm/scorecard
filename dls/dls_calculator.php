@@ -9,15 +9,16 @@
 </head>
 
 <body>
-    <h2>Duckworth-Lewis Stern Calculation</h2>
+    <h2>Duckworth-Lewis-Stern Calculation</h2>
 
-    <p>
+    <!-- <p>
         An introduction to the D/L (Duckworth/Lewis) method of resetting targets in interrupted one-day cricket matches by Frank Duckworth & Tony Lewis.
-    </p>
+    </p> -->
     <p>
         The Duckworth–Lewis–Stern (D/L/S) method is a mathematical formula used to calculate a revised target score for the team batting second in a limited-overs cricket match that has been interrupted by weather or other circumstances.
         It was developed in the 1990s to replace other rules for dealing with rain during cricket games. The method ensures a fair outcome by accounting for the number of overs and wickets remaining in the interrupted match.
     </p>
+    <hr>
 
     <form action="dls_calculator.php" method="post">
         <label for="teamARuns">Team A Runs Scored:</label>
@@ -41,11 +42,6 @@
 
         <input type="submit" value="Calculate Par Score">
     </form>
-
-    <p><a href="../index.php">Go to homepage</a></p><br>
-
-    <!-- Include Trivia -->
-    <?php include '../trivia.php'; ?>
 
     <?php
     if ($_SERVER["REQUEST_METHOD"] == "POST") {
@@ -99,6 +95,11 @@
         mysqli_close($conn);
     }
     ?>
+
+    <p><a href="../index.php">Go to homepage</a></p><br>
+
+    <!-- Include Trivia -->
+    <?php include '../trivia.php'; ?>
 
 </body>
 

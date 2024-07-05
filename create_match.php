@@ -65,6 +65,10 @@
         <input type="submit" value="Create Match">
     </form>
 
+    <p><a href="admin_dashboard.php">Dashboard</a></p>
+    <p><a href="view_matches.php">Update Existing Match Data</a></p>
+    <p><a href="index.php">Logout</a></p>
+
     <script>
         function updateVenue() {
             var team1 = document.getElementById("team1").value;

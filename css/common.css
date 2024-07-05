@@ -14,7 +14,6 @@ p {
   margin-bottom: 10px;
 }
 
-/* Form styles */
 form {
   margin-bottom: 20px;
 }
@@ -41,6 +40,14 @@ input[type="submit"] {
 
 input[type="submit"]:hover {
   background-color: #45a049;
+}
+
+a {
+  text-decoration: none;
+}
+
+a:hover {
+  text-decoration: underline;
 }
 
 /* Specific styles for DLS calculator */
