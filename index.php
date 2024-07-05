@@ -4,18 +4,18 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login</title>
-    <!-- <link rel="stylesheet" href="css/index.css"> -->
+    <title>Login here</title>
+    <link rel="stylesheet" href="css/style.css">
 </head>
 
 <body>
     <h2>Welcome to <i>scorecard.com</i></h2>
     <form method="POST" action="login.php">
-        <label for="username">Username:</label>
-        <input type="text" id="username" name="username" required><br><br>
+        <label for="username"></label>
+        <input type="text" id="username" name="username" placeholder="username" required><br><br>
 
-        <label for="password">Password:</label>
-        <input type="password" id="password" name="password" required><br><br>
+        <label for="password"></label>
+        <input type="password" id="password" name="password" placeholder="password" required><br><br>
 
         <input type="submit" value="Login">
     </form>
@@ -26,31 +26,8 @@
     <p><a href="strike rate/strike_rate.php">Strike Rate Calculator</a></p>
     <p><a href="dls/dls_calculator.php">Duckworth-Lewis-Stern Par Score Calculator</a></p><br>
 
-    <?php
-    function fetchTrivia($id)
-    {
-        $url = "https://cricket-trivia-api-2fa7961781d4.herokuapp.com/cricket_trivia";
-        $data = file_get_contents($url);
-        $triviaArray = json_decode($data, true);
-
-        foreach ($triviaArray as $trivia) {
-            if ($trivia['id'] == $id) {
-                return $trivia;
-            }
-        }
-        return null;
-    }
-
-    $today = date("j"); // Day of the month without leading zeros
-    $trivia = fetchTrivia($today);
-
-    if ($trivia) {
-        echo "<h3>Cricket Trivia for Today</h3>";
-        echo "<p><strong>" . $trivia['title'] . ":</strong> " . $trivia['description'] . "</p>";
-    } else {
-        echo "<p>No trivia found for today.</p>";
-    }
-    ?>
+    <!-- Include Trivia -->
+    <?php include 'trivia.php'; ?>
 
     <script>
         function showMessage() {
