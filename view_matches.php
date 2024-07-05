@@ -41,9 +41,9 @@
             echo "<td class='action-buttons'>";
             // Enable update button only if result is empty
             if (empty($row['result'])) {
-                echo "<button class='update-btn' onclick='updateMatch(" . $row['match_no'] . ")'>Update</button>";
+                echo "<button class='update-btn' data-match-no='" . $row['match_no'] . "'>Update</button>";
             } else {
-                echo "<button class='update-btn' disabled>Update</button>";
+                echo "<button class='update-btn' data-disabled='true' data-match-no='" . $row['match_no'] . "'>Update</button>";
             }
             // Enable delete button if result is not empty
             echo "<button class='delete-btn' onclick='deleteMatch(" . $row['match_no'] . ")'>Delete</button>";
@@ -73,6 +73,22 @@
                 window.location.href = "delete_match.php?match_no=" + matchNo;
             }
         }
+
+        function alertUpdate() {
+            alert('Cannot update the resulted match. Delete and enter new data if required.');
+        }
+
+        // Add event listener to update buttons for extra caution, in case gets clicked through some external script or browser quirk
+        document.querySelectorAll('.update-btn').forEach(button => {
+            button.addEventListener('click', function(event) {
+                if (button.getAttribute('data-disabled') === 'true') {
+                    event.preventDefault();
+                    alertUpdate();
+                } else {
+                    updateMatch(button.getAttribute('data-match-no'));
+                }
+            });
+        });
     </script>
 
 </body>
