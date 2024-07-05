@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Match Data Table</title>
+    <title>Tournament History</title>
     <link rel="stylesheet" href="css/view_matches.css">
 </head>
 
@@ -16,7 +16,7 @@
     include 'config.php';
 
     // Query to retrieve all data from tournament_data table
-    $sql = "SELECT * FROM tournament_data ORDER BY match_no DESC"; // Order by match_no in descending order
+    $sql = "SELECT * FROM tournament_data ORDER BY date DESC"; // Order by match_no in descending order
 
     $result = $conn->query($sql);
 
@@ -56,6 +56,7 @@
         echo '<div style="text-align: center; font-size: 25px;">No data found.</div>';
     }
     ?>
+
     <p><a href="create_match.php">Insert Match Data</a></p>
     <p><a href="admin_dashboard.php">Dashboard</a></p>
     <p><a href="index.php">Logout</a></p>

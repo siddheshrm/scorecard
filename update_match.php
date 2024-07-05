@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Update Scorecard</title>
+    <title>Update Match</title>
     <link rel="stylesheet" href="css/update_match.css">
 
     <script>
@@ -18,11 +18,41 @@
                 ballsBowled.disabled = false;
             }
         }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            var inning1Runs = document.getElementById('inning1_runs');
+            var inning1Wickets = document.getElementById('inning1_wickets');
+            var inning2Runs = document.getElementById('inning2_runs');
+            var inning2Wickets = document.getElementById('inning2_wickets');
+
+            // Validation on form submit
+            document.querySelector('form').addEventListener('submit', function(event) {
+                var runs1 = parseInt(inning1Runs.value);
+                var wickets1 = parseInt(inning1Wickets.value);
+                var runs2 = parseInt(inning2Runs.value);
+                var wickets2 = parseInt(inning2Wickets.value);
+
+                // Validate inning 2 runs and wickets
+                if (runs2 > runs1) {
+                    if (wickets2 === 10) {
+                        alert('Inning 2 cannot lose all 10 wickets to win.');
+                        event.preventDefault();
+                        return;
+                    }
+                    if (runs2 > runs1 + 5) {
+                        alert('Inning 2 runs cannot exceed inning 1 runs by more than 5.');
+                        event.preventDefault();
+                        return;
+                    }
+                }
+            });
+        });
     </script>
+
 </head>
 
 <body>
-    <h2>Update Scorecard</h2>
+    <h2>Update Match</h2>
 
     <?php
     include 'config.php';
@@ -87,7 +117,7 @@
 
             // Display match details as a card
             echo "<div class='card'>";
-            echo "<h3>$away_team vs $home_team</h3>";
+            echo "<h3>$home_team vs $away_team</h3>";
             $formatted_date = date("F j, Y", strtotime($row['date']));
             echo "<p>Date: $formatted_date</p>";
             echo "<p>Venue: $venue</p>";
@@ -133,6 +163,10 @@
 
     $conn->close();
     ?>
+
+    <p><a href="view_matches.php">Update Existing Match Data</a></p>
+    <p><a href="admin_dashboard.php">Dashboard</a></p>
+    <p><a href="index.php">Logout</a></p>
 </body>
 
 </html>
