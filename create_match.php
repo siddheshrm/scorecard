@@ -5,6 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Create Match</title>
+    <link rel="stylesheet" href="css/create_match.css">
 </head>
 
 <body>
@@ -123,7 +124,7 @@
             }
         }
 
-        document.addEventListener("DOMContentLoaded", function () {
+        document.addEventListener("DOMContentLoaded", function() {
             updateVenue();
             updateTossWonBy();
         });

@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Match Data Table</title>
-    <link rel="stylesheet" href="css/table.css">
+    <link rel="stylesheet" href="css/view_matches.css">
 </head>
 
 <body>
