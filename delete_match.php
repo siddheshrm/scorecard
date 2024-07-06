@@ -35,7 +35,7 @@ if (isset($_GET['match_no']) && !empty($_GET['match_no'])) {
                         $winning_team_short_name = $winning_team_row['short_name'];
 
                         // Determine the losing team
-                        $losing_team = ($home_team === $winning_team) ? $away_team : $home_team;
+                        $losing_team_short_name = ($home_team === $winning_team_short_name) ? $away_team : $home_team;
 
                         // Update wins and points for the winning team
                         $update_winning_team = "UPDATE teams SET wins = wins - 1, points = points - 2, matches_played = matches_played - 1, nrr = nrr - $nrr WHERE short_name = '$winning_team_short_name'";
@@ -44,7 +44,7 @@ if (isset($_GET['match_no']) && !empty($_GET['match_no'])) {
                         }
 
                         // Update losses for the losing team
-                        $update_losing_team = "UPDATE teams SET losses = losses - 1, matches_played = matches_played - 1, nrr = nrr + $nrr WHERE short_name = '$losing_team'";
+                        $update_losing_team = "UPDATE teams SET losses = losses - 1, matches_played = matches_played - 1, nrr = nrr + $nrr WHERE short_name = '$losing_team_short_name'";
                         if ($conn->query($update_losing_team) !== TRUE) {
                             echo "Error updating losses for losing team: " . $conn->error;
                         }

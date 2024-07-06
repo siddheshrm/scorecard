@@ -47,9 +47,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         // Calculate NRR for both teams
         $overs_played_inning1 = $inning1_overs_nrr + ($inning1_balls_nrr / 6);
         $overs_played_inning2 = $inning2_overs_nrr + ($inning2_balls_nrr / 6);
-        // $overs_played_home_nrr = $inning1_overs_nrr + ($inning1_balls_nrr / 6);
-        // $overs_played_away_nrr = $inning2_overs_nrr + ($inning2_balls_nrr / 6);
-
+        
         // Fetch match details to get the teams
         $stmt = $conn->prepare("SELECT home_team, away_team, toss, decision, result FROM tournament_data WHERE match_no = ?");
         $stmt->bind_param("i", $match_no);
@@ -146,13 +144,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     $losing_team_nrr = -$nrr;
 
                     // Update wins, points, matches_played, and NRR for the winning team
-                    $stmt_update_wins = $conn->prepare("UPDATE teams SET wins = wins + 1, points = points + 2, nrr = nrr + ? WHERE short_name = ?");
+                    $stmt_update_wins = $conn->prepare("UPDATE teams SET matches_played = matches_played + 1, wins = wins + 1, points = points + 2, nrr = nrr + ? WHERE short_name = ?");
                     $stmt_update_wins->bind_param("ds", $winning_team_nrr, $winning_team_short);
                     $stmt_update_wins->execute();
                     $stmt_update_wins->close();
 
                     // Update losses, matches_played, and NRR for the losing team
-                    $stmt_update_losses = $conn->prepare("UPDATE teams SET losses = losses + 1, nrr = nrr + ? WHERE short_name = ?");
+                    $stmt_update_losses = $conn->prepare("UPDATE teams SET matches_played = matches_played + 1, losses = losses + 1, nrr = nrr + ? WHERE short_name = ?");
                     $stmt_update_losses->bind_param("ds", $losing_team_nrr, $losing_team_short);
                     $stmt_update_losses->execute();
                     $stmt_update_losses->close();
@@ -182,7 +180,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         $stmt->close();
     } else {
-        echo "All form fields are required.";
+        echo '<script>alert("All form fields are required.")</script>';
     }
 }
 

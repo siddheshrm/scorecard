@@ -8,17 +8,6 @@
     <link rel="stylesheet" href="css/update_match.css">
 
     <script>
-        function updateBallsBowled(oversInputId, ballsInputId) {
-            var oversPlayed = document.getElementById(oversInputId).value;
-            var ballsBowled = document.getElementById(ballsInputId);
-            if (oversPlayed == 20) {
-                ballsBowled.value = 0;
-                ballsBowled.disabled = true;
-            } else {
-                ballsBowled.disabled = false;
-            }
-        }
-
         document.addEventListener('DOMContentLoaded', function() {
             var inning1Runs = document.getElementById('inning1_runs');
             var inning1Wickets = document.getElementById('inning1_wickets');
@@ -127,6 +116,7 @@
             // Display innings details with input fields
             echo "<div class='innings'>";
             echo "<h3>Innings Details</h3>";
+
             echo "<p>Inning 1: $batting_team</p>";
             echo "<form action='submit_score.php' method='post'>";
             echo "<input type='hidden' name='match_no' value='$match_no'>";
@@ -135,7 +125,7 @@
             echo "<label for='inning1_wickets'>Wickets Lost:</label>";
             echo "<input type='number' id='inning1_wickets' name='inning1_wickets' min='0' max='10' required>";
             echo "<label for='inning1_overs'>Overs Played:</label>";
-            echo "<input type='number' id='inning1_overs' name='inning1_overs' min='0' max='20' required onchange='updateBallsBowled(\"inning1_overs\", \"inning1_balls\")'>";
+            echo "<input type='number' id='inning1_overs' name='inning1_overs' min='0' max='20' required oninput='if (this.value == 20) { document.getElementById(\"inning1_balls\").value = 0; }'>";
             echo "<label for='inning1_balls'>Balls Played:</label>";
             echo "<input type='number' id='inning1_balls' name='inning1_balls' min='0' max='5' required>";
 
@@ -145,9 +135,10 @@
             echo "<label for='inning2_wickets'>Wickets Lost:</label>";
             echo "<input type='number' id='inning2_wickets' name='inning2_wickets' min='0' max='10' required>";
             echo "<label for='inning2_overs'>Overs Played:</label>";
-            echo "<input type='number' id='inning2_overs' name='inning2_overs' min='0' max='20' required onchange='updateBallsBowled(\"inning2_overs\", \"inning2_balls\")'>";
+            echo "<input type='number' id='inning2_overs' name='inning2_overs' min='0' max='20' required oninput='if (this.value == 20) { document.getElementById(\"inning2_balls\").value = 0; }'>";
             echo "<label for='inning2_balls'>Balls Played:</label>";
             echo "<input type='number' id='inning2_balls' name='inning2_balls' min='0' max='5' required>";
+            
             echo "<br>";
             echo "<input type='submit' value='Submit Score'>";
             echo "</form>";
