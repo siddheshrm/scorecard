@@ -78,7 +78,8 @@ $conn->close();
         <?php
         $position = 1;
         foreach ($points_table as $team) {
-            echo "<tr>";
+            $row_class = $position <= 4 ? 'top-team' : '';
+            echo "<tr class='$row_class'>";
             echo "<td>" . $position . "</td>";
             echo "<td>" . $team['team_name'] . "</td>";
             echo "<td>" . $team['matches_played'] . "</td>";

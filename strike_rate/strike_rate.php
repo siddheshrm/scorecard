@@ -16,11 +16,11 @@
     </p>
 
     <form method="POST">
-        <label for="balls">Balls Faced:</label>
-        <input type="number" id="balls" name="balls" required><br>
-
         <label for="runs">Runs Scored:</label>
         <input type="number" id="runs" name="runs" required><br>
+
+        <label for="balls">Balls Faced:</label>
+        <input type="number" id="balls" name="balls" required><br>
 
         <input type="submit" value="Calculate">
     </form>
@@ -35,7 +35,9 @@
         if (!empty($balls) && !empty($runs)) {
             // Calculate strike rate
             $strikeRate = ($runs / $balls) * 100;
-            echo "<p><b>Strike Rate: $strikeRate</b></p>";
+            // Format the strike rate to 2 decimal places
+            $strikeRateFormatted = number_format($strikeRate, 2);
+            echo "<p><b>$runs Runs scored in $balls balls with the Strike Rate of $strikeRateFormatted</b></p>";
         } else {
             echo "<p>Please fill in both fields.</p>";
         }
