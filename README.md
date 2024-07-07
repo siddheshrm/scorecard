@@ -50,4 +50,4 @@ Create match page : ![Create match page](<screenshots/create match.png>)
 Update match page : ![Update match page](<screenshots/update match.png>)
 Tournament history page : ![Tournament history page](<screenshots/tournament history page.png>)
 Strike rate calculator page : ![Strike rate calculator page](<screenshots/strike rate calculator.png>)
-DLS par score calculator page :
+DLS par score calculator page :![DLS par score calculator page](<screenshots/dls calculator.png>)

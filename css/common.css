@@ -60,6 +60,22 @@ a:hover {
   width: 100px;
 }
 
+select#matchSituation {
+  padding: 8px;
+  font-size: 16px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  margin-bottom: 10px;
+  background-color: #fff;
+  width: auto;
+  cursor: pointer;
+}
+
+select#matchSituation:hover {
+  border-color: #45a049;
+  background-color: #f9f9f9;
+}
+
 /* Specific styles for Strike Rate calculator */
 #balls,
 #runs {

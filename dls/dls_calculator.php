@@ -9,7 +9,7 @@
 </head>
 
 <body>
-    <h2>Duckworth-Lewis-Stern Calculation</h2>
+    <h2>DLS Par Score Calculator</h2>
 
     <!-- <p>
         An introduction to the D/L (Duckworth/Lewis) method of resetting targets in interrupted one-day cricket matches by Frank Duckworth & Tony Lewis.
@@ -21,24 +21,42 @@
     <hr>
 
     <form action="dls_calculator.php" method="post">
-        <label for="teamARuns">Team A Runs Scored:</label>
+        <!-- DLS Scenarios -->
+        <label for="matchSituation">Match Situation To Determine Par Score</label>
+        <select id="matchSituation" name="matchSituation" required>
+            <option value="teamAInterrupted">Team batting first could not complete 50 overs</option>
+            <option value="teamBPartiallyPlayed">Team batting second played some overs, but could not complete 50 overs</option>
+            <option value="teamBNotStarted">Inning 2 reduced by some overs</option>
+        </select><br>
+        <hr>
+
+        <!-- Team Batting First -->
+        <label>Team Batting First</label>
+        <label for="teamARuns">Runs Scored:</label>
         <input type="number" id="teamARuns" name="teamARuns" value="<?php if (isset($_POST['teamARuns'])) echo $_POST['teamARuns']; ?>" required><br>
 
-        <label for="teamAWickets">Team A Wickets Lost:</label>
+        <label for="teamAWickets">Wickets Lost:</label>
         <input type="number" id="teamAWickets" name="teamAWickets" min="0" max="10" value="<?php if (isset($_POST['teamAWickets'])) echo $_POST['teamAWickets']; ?>" required><br>
 
-        <label for="teamAOvers">Team A Overs Completed:</label>
+        <label for="teamAOvers">Overs Completed:</label>
         <input type="number" id="teamAOvers" name="teamAOvers" min="0" max="50" value="<?php if (isset($_POST['teamAOvers'])) echo $_POST['teamAOvers']; ?>" required><br>
         <hr>
 
-        <label for="teamBRuns">Team B Runs Scored:</label>
+        <!-- Team Batting Second -->
+        <label>Team Batting Second</label>
+        <label for="teamBRuns">Runs Scored:</label>
         <input type="number" id="teamBRuns" name="teamBRuns" value="<?php if (isset($_POST['teamBRuns'])) echo $_POST['teamBRuns']; ?>"><br>
 
-        <label for="teamBWickets">Team B Wickets Lost:</label>
+        <label for="teamBWickets">Wickets Lost:</label>
         <input type="number" id="teamBWickets" name="teamBWickets" min="0" max="10" value="<?php if (isset($_POST['teamBWickets'])) echo $_POST['teamBWickets']; ?>"><br>
 
-        <label for="teamBOvers">Team B Overs Completed:</label>
+        <label for="teamBOvers">Overs Completed:</label>
         <input type="number" id="teamBOvers" name="teamBOvers" min="0" max="50" value="<?php if (isset($_POST['teamBOvers'])) echo $_POST['teamBOvers']; ?>"><br>
+        <hr>
+
+        <!-- Team Batting Second Inning Reduced -->
+        <label for="teamBOversReduced">Inning 2 Reduced To Overs:</label>
+        <input type="number" id="teamBOversReduced" name="teamBOversReduced" min="0" max="50" value="<?php if (isset($_POST['teamBOversReduced'])) echo $_POST['teamBOversReduced']; ?>"><br>
 
         <input type="submit" value="Calculate Par Score">
     </form>
@@ -51,44 +69,73 @@
         $teamARuns = (int)$_POST['teamARuns'];
         $teamAWickets = (int)$_POST['teamAWickets'];
         $teamAOvers = (int)$_POST['teamAOvers'];
-        $teamBRuns = isset($_POST['teamBRuns']) ? (int)$_POST['teamBRuns'] : null;
-        $teamBWickets = isset($_POST['teamBWickets']) ? (int)$_POST['teamBWickets'] : null;
+        // Initialize Team B variables (default 0 if not provided)
+        $teamBRuns = isset($_POST['teamBRuns']) ? (int)$_POST['teamBRuns'] : 0;
+        $teamBWickets = isset($_POST['teamBWickets']) ? (int)$_POST['teamBWickets'] : 0;
+        $teamBOvers = isset($_POST['teamBOvers']) ? (int)$_POST['teamBOvers'] : 0;
+        $teamBOversReduced = isset($_POST['teamBOversReduced']) ? (int)$_POST['teamBOversReduced'] : 0;
 
-        // Calculate overs left for Team A
-        $oversLeft = 50 - $teamAOvers;
+        // Calculate overs left
+        $oversALeft = 50 - $teamAOvers;
+        $oversBLeft = 50 - $teamBOvers;
 
-        // Query to get the resources percentage used by Team A
-        $query = "SELECT wickets_lost_$teamAWickets AS resources_percentage_used
-                  FROM dls_calculation
-                  WHERE overs_left = $oversLeft";
+        // Determine the match situation selected in the form
+        $matchSituation = $_POST['matchSituation'];
 
-        $result = mysqli_query($conn, $query);
+        // Adjust par score calculation based on match situation
+        switch ($matchSituation) {
+            case 'teamAInterrupted':
+                $query = "SELECT wickets_lost_$teamAWickets AS resources_percentage_remain FROM dls_calculation WHERE overs_left = $oversALeft";
+                break;
 
-        if ($result && mysqli_num_rows($result) > 0) {
-            $row = mysqli_fetch_assoc($result);
-            $resourcesPercentageUsed = (float)$row['resources_percentage_used'];
-            $resourcesPercentageRemain = 100 - $resourcesPercentageUsed;
+            case 'teamBPartiallyPlayed':
+                $query = "SELECT wickets_lost_$teamBWickets AS resources_percentage_remain FROM dls_calculation WHERE overs_left = $oversBLeft";
+                break;
 
-            // Calculate Team B's par score
-            $teamBParScore = round($teamARuns * ($resourcesPercentageRemain / 100));
+            case 'teamBNotStarted':
+                $query = "SELECT wickets_lost_$teamBWickets AS resources_percentage_remain FROM dls_calculation WHERE overs_left = $teamBOversReduced";
+                break;
 
-            if ($teamBRuns !== null && $teamBWickets !== null) {
-                // When Team B has played some overs and lost wickets
-                $runsRemaining = $teamBParScore - $teamBRuns;
-                $wicketsInHand = 10 - $teamBWickets;
+            default:
+                echo "Error: Invalid match situation selected.";
+                exit;
+        }
 
-                // Display the result
-                echo "<h3>Duckworth-Lewis Stern Result</h3>";
-                echo "<p>Team A: $teamARuns/$teamAWickets in $teamAOvers overs</p>";
-                echo "<p>Team B: Par Score: $teamBParScore, Runs Remaining: $runsRemaining, Wickets in Hand: $wicketsInHand</p>";
+        if (isset($query)) {
+            $result = mysqli_query($conn, $query);
+
+            if ($result && mysqli_num_rows($result) > 0) {
+                $row = mysqli_fetch_assoc($result);
+                $resourcesPercentageRemain = (float)$row['resources_percentage_remain'];
+                $resourcesPercentageUsed = 100 - $resourcesPercentageRemain;
             } else {
-                // When Team B has not played yet
-                echo "<h3>Duckworth-Lewis Stern Result</h3>";
-                echo "<p>Team A: $teamARuns/$teamAWickets in $teamAOvers overs</p>";
-                echo "<p>Team B: Par score: $teamBParScore in $teamAOvers overs</p>";
+                echo "Error: Could not retrieve resources percentage used.";
+                exit;
             }
-        } else {
-            echo "<p>Error fetching data from the database.</p>";
+        }
+
+        switch ($matchSituation) {
+            case 'teamAInterrupted':
+                $teamBParScore = ceil((($resourcesPercentageUsed * $teamARuns / 100) + $teamARuns) + 1);
+                echo "Team batting first could not play 50 overs and match was reduced to overs " . $teamAOvers . " each<br>";
+                echo "DLS Par Score for Team B: " . $teamBParScore . " runs in " . $teamAOvers . " overs";
+                break;
+
+            case 'teamBPartiallyPlayed':
+                $teamBParScore = ceil(($resourcesPercentageRemain / 100) * $teamARuns + 1);
+                echo "Team batting second could not play 50 overs and match was abandoned after " . $teamBOvers . " overs<br>";
+                echo "DLS Par Score for Team B: " . $teamBParScore . " runs in " . $teamBOvers . " overs";
+                break;
+
+            case 'teamBNotStarted':
+                $teamBParScore = ceil(($resourcesPercentageRemain / 100) * $teamARuns + 1);
+                echo ("Inning two reduced to " . $teamBOversReduced . " overs<br>");
+                echo "DLS Par Score for Team B: " . $teamBParScore . " runs in " . $teamBOversReduced . " overs";
+                break;
+
+            default:
+                echo "Error: Invalid match situation selected.";
+                exit;
         }
 
         // Close the database connection
