@@ -39,13 +39,8 @@
             echo "<td>" . $row['decision'] . "</td>";
             echo "<td>" . $row['result'] . "</td>";
             echo "<td class='action-buttons'>";
-            // Enable update button only if result is empty
-            if (empty($row['result'])) {
-                echo "<button class='update-btn' data-match-no='" . $row['match_no'] . "'>Update</button>";
-            } else {
-                echo "<button class='update-btn' data-disabled='true' data-match-no='" . $row['match_no'] . "'>Update</button>";
-            }
-            // Enable delete button if result is not empty
+            // Enable update button regardless of result value
+            echo "<button class='update-btn' data-match-no='" . $row['match_no'] . "' data-result='" . $row['result'] . "'>Update</button>";
             echo "<button class='delete-btn' onclick='deleteMatch(" . $row['match_no'] . ")'>Delete</button>";
             echo "</td>";
             echo "</tr>";
@@ -62,9 +57,15 @@
     <p><a href="index.php">Logout</a></p>
 
     <script>
-        function updateMatch(matchNo) {
-            // Redirect to update page with the match number
-            window.location.href = "update_match.php?match_no=" + matchNo;
+        function updateMatch(matchNo, result) {
+            // Check if result is not empty
+            if (result !== "") {
+                // Redirect to edit_match.php if result is not empty
+                window.location.href = "edit_match.php?match_no=" + matchNo;
+            } else {
+                // Redirect to update_match.php if result is empty
+                window.location.href = "update_match.php?match_no=" + matchNo;
+            }
         }
 
         function deleteMatch(matchNo) {
@@ -75,19 +76,10 @@
             }
         }
 
-        function alertUpdate() {
-            alert('Cannot update the resulted match. Delete and enter new data if required.');
-        }
-
         // Add event listener to update buttons for extra caution, in case gets clicked through some external script or browser quirk
         document.querySelectorAll('.update-btn').forEach(button => {
             button.addEventListener('click', function(event) {
-                if (button.getAttribute('data-disabled') === 'true') {
-                    event.preventDefault();
-                    alertUpdate();
-                } else {
-                    updateMatch(button.getAttribute('data-match-no'));
-                }
+                updateMatch(button.getAttribute('data-match-no'), button.getAttribute('data-result'));
             });
         });
     </script>

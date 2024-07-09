@@ -49,7 +49,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $overs_played_inning2 = $inning2_overs_nrr + ($inning2_balls_nrr / 6);
 
         // Fetch match details to get the teams
-        $stmt = $conn->prepare("SELECT home_team, away_team, toss, decision FROM tournament_data WHERE match_no = ?");
+        $stmt = $conn->prepare("SELECT home_team, away_team, toss, decision, winning_team, losing_team, nrr FROM tournament_data WHERE match_no = ?");
         $stmt->bind_param("i", $match_no);
         $stmt->execute();
         $result_set = $stmt->get_result();
@@ -60,6 +60,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $away_team_short = $row['away_team'];
             $toss_short = $row['toss'];
             $decision = $row['decision'];
+            $existing_nrr = $row['nrr'];
+            // Initialize existing result, winning team, and losing team from $row
+            $existing_result = isset($row['result']) ? $row['result'] : NULL;
+            $existing_winning_team = isset($row['winning_team']) ? $row['winning_team'] : NULL;
+            $existing_losing_team = isset($row['losing_team']) ? $row['losing_team'] : NULL;
 
             // Determine the batting team for inning 1
             if ($decision === 'bowl') {
@@ -86,7 +91,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             // Calculate positive NRR
             $nrr = abs(($inning1_runs / $overs_played_inning1) - ($inning2_runs / $overs_played_inning2));
 
-            // Determine winning and losing teams
+            // Determine winning and losing teams based on user inputs
             if ($inning1_runs > $inning2_runs) {
                 $resultMessage = "$batting_team won by " . ($inning1_runs - $inning2_runs) . " runs";
                 $winning_team = $batting_team;
@@ -142,27 +147,32 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
             if ($stmt->execute()) {
                 if ($winning_team !== NULL && $losing_team !== NULL) {
-                    // Calculate positive and negative NRR for the teams
-                    $winning_team_nrr = $nrr;
-                    $losing_team_nrr = -$nrr;
+                    // Compare existing winning and losing teams
+                    if ($winning_team == $existing_losing_team && $losing_team == $existing_winning_team) {
+                        // Result is overturned, losing team won
+                        $stmt_update_wins = $conn->prepare("UPDATE teams SET wins = wins + 1, losses = losses - 1, points = points + 2, nrr = nrr + ? + ? WHERE short_name = ?");
+                        $stmt_update_wins->bind_param("dds", $nrr, $existing_nrr, $winning_team_short);
+                        $stmt_update_wins->execute();
+                        $stmt_update_wins->close();
 
-                    // Update wins, points, matches_played, and NRR for the winning team
-                    $stmt_update_wins = $conn->prepare("UPDATE teams SET matches_played = matches_played + 1, wins = wins + 1, points = points + 2, nrr = nrr + ? WHERE short_name = ?");
-                    $stmt_update_wins->bind_param("ds", $winning_team_nrr, $winning_team_short);
-                    $stmt_update_wins->execute();
-                    $stmt_update_wins->close();
+                        // Result is overturned, winning team lost
+                        $stmt_update_losses = $conn->prepare("UPDATE teams SET losses = losses + 1, wins = wins - 1, points = points - 2, nrr = nrr - ? - ? WHERE short_name = ?");
+                        $stmt_update_losses->bind_param("dds", $nrr, $existing_nrr, $losing_team_short);
+                        $stmt_update_losses->execute();
+                        $stmt_update_losses->close();
+                    } elseif ($winning_team == $existing_winning_team && $losing_team == $existing_losing_team) {
+                        // Winning team is same, just update the NRR
+                        $stmt_update_wins = $conn->prepare("UPDATE teams SET nrr = nrr + ? - ? WHERE short_name = ?");
+                        $stmt_update_wins->bind_param("dds", $nrr, $existing_nrr, $winning_team_short);
+                        $stmt_update_wins->execute();
+                        $stmt_update_wins->close();
 
-                    // Update losses, matches_played, and NRR for the losing team
-                    $stmt_update_losses = $conn->prepare("UPDATE teams SET matches_played = matches_played + 1, losses = losses + 1, nrr = nrr + ? WHERE short_name = ?");
-                    $stmt_update_losses->bind_param("ds", $losing_team_nrr, $losing_team_short);
-                    $stmt_update_losses->execute();
-                    $stmt_update_losses->close();
-                } elseif ($winning_team == NULL && $losing_team == NULL) {
-                    // Update matches_played and no_result for both teams
-                    $stmt_update_tie = $conn->prepare("UPDATE teams SET matches_played = matches_played + 1, no_result = no_result + 1, points = points + 1 WHERE short_name = ? OR short_name = ?");
-                    $stmt_update_tie->bind_param("ss", $home_team_short, $away_team_short);
-                    $stmt_update_tie->execute();
-                    $stmt_update_tie->close();
+                        // Losing team is same, just update the NRR
+                        $stmt_update_losses = $conn->prepare("UPDATE teams SET nrr = nrr - ? + ? WHERE short_name = ?");
+                        $stmt_update_losses->bind_param("dds", $nrr, $existing_nrr, $losing_team_short);
+                        $stmt_update_losses->execute();
+                        $stmt_update_losses->close();
+                    }
                 }
 
                 // Output JavaScript for alert and redirect
