@@ -106,8 +106,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $losing_team = NULL;
             }
 
-            if ($winning_team !== NULL && $losing_team !== NULL) {
-                // Prepare the statement to fetch the short name of the winning team
+            // Initialize short names
+            $winning_team_short = NULL;
+            $losing_team_short = NULL;
+
+            // Determine short names for winning and losing teams
+            if ($winning_team !== NULL) {
+                // Fetch short name for winning team
                 $stmt = $conn->prepare("SELECT short_name FROM teams WHERE team_name = ?");
                 $stmt->bind_param("s", $winning_team);
                 $stmt->execute();
@@ -117,8 +122,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 } else {
                     echo "No short name found for winning team<br>";
                 }
+                $stmt->close();
+            }
 
-                // Prepare the statement to fetch the short name of the losing team
+            if ($losing_team !== NULL) {
+                // Fetch short name for losing team
+                $stmt = $conn->prepare("SELECT short_name FROM teams WHERE team_name = ?");
                 $stmt->bind_param("s", $losing_team);
                 $stmt->execute();
                 $result = $stmt->get_result();
@@ -127,14 +136,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 } else {
                     echo "No short name found for losing team<br>";
                 }
-
-                // Close the statement
                 $stmt->close();
             }
-
-            // Determine short names for winning and losing teams
-            $winning_team_short = ($winning_team_short === $home_team_short) ? $home_team_short : $away_team_short;
-            $losing_team_short = ($losing_team_short === $home_team_short) ? $home_team_short : $away_team_short;
 
             // Prepare update statement for tournament_data
             $stmt = $conn->prepare("UPDATE tournament_data SET result = ?, winning_team = ?, losing_team = ?, runs_scored_home = ?, runs_scored_away = ?, overs_played_home = ?, overs_played_away = ?, balls_played_home = ?, balls_played_away = ?, wickets_lost_home = ?, wickets_lost_away = ?, overs_played_home_nrr = ?, balls_played_home_nrr = ?, overs_played_away_nrr = ?, balls_played_away_nrr = ?, nrr = ? WHERE match_no = ?");
