@@ -47,9 +47,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         // Calculate NRR for both teams
         $overs_played_inning1 = $inning1_overs_nrr + ($inning1_balls_nrr / 6);
         $overs_played_inning2 = $inning2_overs_nrr + ($inning2_balls_nrr / 6);
-        
+
         // Fetch match details to get the teams
-        $stmt = $conn->prepare("SELECT home_team, away_team, toss, decision, result FROM tournament_data WHERE match_no = ?");
+        $stmt = $conn->prepare("SELECT home_team, away_team, toss, decision FROM tournament_data WHERE match_no = ?");
         $stmt->bind_param("i", $match_no);
         $stmt->execute();
         $result_set = $stmt->get_result();
@@ -60,7 +60,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $away_team_short = $row['away_team'];
             $toss_short = $row['toss'];
             $decision = $row['decision'];
-            $current_result = $row['result'];
+            // $current_result = $row['result'];
 
             // Determine the batting team for inning 1
             if ($decision === 'bowl') {
@@ -135,7 +135,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             // Prepare update statement for tournament_data
             $stmt = $conn->prepare("UPDATE tournament_data SET result = ?, winning_team = ?, losing_team = ?, runs_scored_home = ?, runs_scored_away = ?, overs_played_home = ?, overs_played_away = ?, balls_played_home = ?, balls_played_away = ?, wickets_lost_home = ?, wickets_lost_away = ?, overs_played_home_nrr = ?, balls_played_home_nrr = ?, overs_played_away_nrr = ?, balls_played_away_nrr = ?, nrr = ? WHERE match_no = ?");
 
-            $stmt->bind_param("sssiiiiiiiiiiiidi", $resultMessage, $winning_team, $losing_team, $inning1_runs, $inning2_runs, $inning1_overs, $inning2_overs, $inning1_balls, $inning2_balls, $inning1_wickets, $inning2_wickets, $inning1_overs_nrr, $inning1_balls_nrr, $inning2_overs_nrr, $inning2_balls_nrr, $nrr, $match_no);
+            if ($batting_team_short == $home_team_short) {
+                $stmt->bind_param("sssiiiiiiiiiiiidi", $resultMessage, $winning_team, $losing_team, $inning1_runs, $inning2_runs, $inning1_overs, $inning2_overs, $inning1_balls, $inning2_balls, $inning1_wickets, $inning2_wickets, $inning1_overs_nrr, $inning1_balls_nrr, $inning2_overs_nrr, $inning2_balls_nrr, $nrr, $match_no);
+            } else {
+                $stmt->bind_param("sssiiiiiiiiiiiidi", $resultMessage, $winning_team, $losing_team, $inning2_runs, $inning1_runs, $inning2_overs, $inning1_overs, $inning2_balls, $inning1_balls, $inning2_wickets, $inning1_wickets, $inning2_overs_nrr, $inning2_balls_nrr, $inning1_overs_nrr, $inning1_balls_nrr, $nrr, $match_no);
+            }
 
             if ($stmt->execute()) {
                 if ($winning_team !== NULL && $losing_team !== NULL) {

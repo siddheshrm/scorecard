@@ -1,9 +1,6 @@
 <?php
 include 'config.php';
 
-// Debugging: Dump received POST data
-var_dump($_POST);
-
 // Check if the form is submitted
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     // Retrieve form data
