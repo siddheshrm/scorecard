@@ -106,6 +106,32 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $losing_team = NULL;
             }
 
+            // Determine short names for existing winning and losing teams
+            $existing_winning_team_short = NULL;
+            $existing_losing_team_short = NULL;
+
+            if ($existing_winning_team !== NULL) {
+                $stmt = $conn->prepare("SELECT short_name FROM teams WHERE team_name = ?");
+                $stmt->bind_param("s", $existing_winning_team);
+                $stmt->execute();
+                $result = $stmt->get_result();
+                if ($result->num_rows > 0) {
+                    $existing_winning_team_short = $result->fetch_assoc()['short_name'];
+                }
+                $stmt->close();
+            }
+
+            if ($existing_losing_team !== NULL) {
+                $stmt = $conn->prepare("SELECT short_name FROM teams WHERE team_name = ?");
+                $stmt->bind_param("s", $existing_losing_team);
+                $stmt->execute();
+                $result = $stmt->get_result();
+                if ($result->num_rows > 0) {
+                    $existing_losing_team_short = $result->fetch_assoc()['short_name'];
+                }
+                $stmt->close();
+            }
+
             // Initialize short names
             $winning_team_short = NULL;
             $losing_team_short = NULL;
@@ -139,7 +165,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $stmt->close();
             }
 
-            // Prepare update statement for tournament_data
+            // Prepare update statement for tournament_data based on home and away team
             $stmt = $conn->prepare("UPDATE tournament_data SET result = ?, winning_team = ?, losing_team = ?, runs_scored_home = ?, runs_scored_away = ?, overs_played_home = ?, overs_played_away = ?, balls_played_home = ?, balls_played_away = ?, wickets_lost_home = ?, wickets_lost_away = ?, overs_played_home_nrr = ?, balls_played_home_nrr = ?, overs_played_away_nrr = ?, balls_played_away_nrr = ?, nrr = ? WHERE match_no = ?");
 
             if ($batting_team_short == $home_team_short) {
@@ -149,31 +175,54 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             }
 
             if ($stmt->execute()) {
-                if ($winning_team !== NULL && $losing_team !== NULL) {
-                    // Compare existing winning and losing teams
+                if ($winning_team === NULL && $losing_team === NULL) {
+                    // Adjust for the previous winning team
+                    $stmt_update_wins = $conn->prepare("UPDATE teams SET wins = wins - 1, points = points - 1, no_result = no_result + 1, nrr = nrr - ? WHERE short_name = ?");
+                    $stmt_update_wins->bind_param("ds", $existing_nrr, $existing_winning_team_short);
+                    if (!$stmt_update_wins->execute()) {
+                        echo "Error executing statement for previous winning team: " . $stmt_update_wins->error;
+                    }
+                    $stmt_update_wins->close();
+
+                    // Adjust for the previous losing team
+                    $stmt_update_losses = $conn->prepare("UPDATE teams SET losses = losses - 1, points = points + 1, no_result = no_result + 1, nrr = nrr + ? WHERE short_name = ?");
+                    $stmt_update_losses->bind_param("ds", $existing_nrr, $existing_losing_team_short);
+                    if (!$stmt_update_losses->execute()) {
+                        echo "Error executing statement for previous losing team: " . $stmt_update_losses->error;
+                    }
+                    $stmt_update_losses->close();
+                } else {
                     if ($winning_team == $existing_losing_team && $losing_team == $existing_winning_team) {
                         // Result is overturned, losing team won
                         $stmt_update_wins = $conn->prepare("UPDATE teams SET wins = wins + 1, losses = losses - 1, points = points + 2, nrr = nrr + ? + ? WHERE short_name = ?");
                         $stmt_update_wins->bind_param("dds", $nrr, $existing_nrr, $winning_team_short);
-                        $stmt_update_wins->execute();
+                        if (!$stmt_update_wins->execute()) {
+                            echo "Error executing statement for winning team: " . $stmt_update_wins->error;
+                        }
                         $stmt_update_wins->close();
 
                         // Result is overturned, winning team lost
                         $stmt_update_losses = $conn->prepare("UPDATE teams SET losses = losses + 1, wins = wins - 1, points = points - 2, nrr = nrr - ? - ? WHERE short_name = ?");
                         $stmt_update_losses->bind_param("dds", $nrr, $existing_nrr, $losing_team_short);
-                        $stmt_update_losses->execute();
+                        if (!$stmt_update_losses->execute()) {
+                            echo "Error executing statement for losing team: " . $stmt_update_losses->error;
+                        }
                         $stmt_update_losses->close();
                     } elseif ($winning_team == $existing_winning_team && $losing_team == $existing_losing_team) {
-                        // Winning team is same, just update the NRR
+                        // Winning team is the same, just update the NRR
                         $stmt_update_wins = $conn->prepare("UPDATE teams SET nrr = nrr + ? - ? WHERE short_name = ?");
                         $stmt_update_wins->bind_param("dds", $nrr, $existing_nrr, $winning_team_short);
-                        $stmt_update_wins->execute();
+                        if (!$stmt_update_wins->execute()) {
+                            echo "Error executing statement for winning team: " . $stmt_update_wins->error;
+                        }
                         $stmt_update_wins->close();
 
-                        // Losing team is same, just update the NRR
+                        // Losing team is the same, just update the NRR
                         $stmt_update_losses = $conn->prepare("UPDATE teams SET nrr = nrr - ? + ? WHERE short_name = ?");
                         $stmt_update_losses->bind_param("dds", $nrr, $existing_nrr, $losing_team_short);
-                        $stmt_update_losses->execute();
+                        if (!$stmt_update_losses->execute()) {
+                            echo "Error executing statement for losing team: " . $stmt_update_losses->error;
+                        }
                         $stmt_update_losses->close();
                     }
                 }
