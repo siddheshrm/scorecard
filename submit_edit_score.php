@@ -176,6 +176,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
             if ($stmt->execute()) {
                 if ($winning_team === NULL && $losing_team === NULL) {
+                    // Match is now tied
                     // Adjust for the previous winning team
                     $stmt_update_wins = $conn->prepare("UPDATE teams SET wins = wins - 1, points = points - 1, no_result = no_result + 1, nrr = nrr - ? WHERE short_name = ?");
                     $stmt_update_wins->bind_param("ds", $existing_nrr, $existing_winning_team_short);
@@ -193,7 +194,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     $stmt_update_losses->close();
                 } else {
                     if ($winning_team == $existing_losing_team && $losing_team == $existing_winning_team) {
-                        // Result is overturned, losing team won
+                        // Result was overturned
+                        // Losing team won
                         $stmt_update_wins = $conn->prepare("UPDATE teams SET wins = wins + 1, losses = losses - 1, points = points + 2, nrr = nrr + ? + ? WHERE short_name = ?");
                         $stmt_update_wins->bind_param("dds", $nrr, $existing_nrr, $winning_team_short);
                         if (!$stmt_update_wins->execute()) {
@@ -201,7 +203,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         }
                         $stmt_update_wins->close();
 
-                        // Result is overturned, winning team lost
+                        // Winning team lost
                         $stmt_update_losses = $conn->prepare("UPDATE teams SET losses = losses + 1, wins = wins - 1, points = points - 2, nrr = nrr - ? - ? WHERE short_name = ?");
                         $stmt_update_losses->bind_param("dds", $nrr, $existing_nrr, $losing_team_short);
                         if (!$stmt_update_losses->execute()) {
@@ -209,7 +211,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         }
                         $stmt_update_losses->close();
                     } elseif ($winning_team == $existing_winning_team && $losing_team == $existing_losing_team) {
-                        // Winning team is the same, just update the NRR
+                        // Result is same
+                        // Update the NRR for winning team
                         $stmt_update_wins = $conn->prepare("UPDATE teams SET nrr = nrr + ? - ? WHERE short_name = ?");
                         $stmt_update_wins->bind_param("dds", $nrr, $existing_nrr, $winning_team_short);
                         if (!$stmt_update_wins->execute()) {
@@ -217,9 +220,26 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         }
                         $stmt_update_wins->close();
 
-                        // Losing team is the same, just update the NRR
+                        // Update the NRR for losing team
                         $stmt_update_losses = $conn->prepare("UPDATE teams SET nrr = nrr - ? + ? WHERE short_name = ?");
                         $stmt_update_losses->bind_param("dds", $nrr, $existing_nrr, $losing_team_short);
+                        if (!$stmt_update_losses->execute()) {
+                            echo "Error executing statement for losing team: " . $stmt_update_losses->error;
+                        }
+                        $stmt_update_losses->close();
+                    } elseif ($existing_winning_team == NULL && $existing_losing_team == NULL) {
+                        // Match now has clear winner, previously tied
+                        // Adjust for winning team
+                        $stmt_update_wins = $conn->prepare("UPDATE teams SET wins = wins + 1, no_result = no_result - 1, points = points + 1, nrr = nrr + ? WHERE short_name = ?");
+                        $stmt_update_wins->bind_param("ds", $nrr, $winning_team_short);
+                        if (!$stmt_update_wins->execute()) {
+                            echo "Error executing statement for winning team: " . $stmt_update_wins->error;
+                        }
+                        $stmt_update_wins->close();
+
+                        // Adjust for losing team
+                        $stmt_update_losses = $conn->prepare("UPDATE teams SET losses = losses + 1, no_result = no_result - 1, points = points - 1, nrr = nrr - ? WHERE short_name = ?");
+                        $stmt_update_losses->bind_param("ds", $nrr, $losing_team_short);
                         if (!$stmt_update_losses->execute()) {
                             echo "Error executing statement for losing team: " . $stmt_update_losses->error;
                         }
