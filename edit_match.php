@@ -14,12 +14,22 @@
             var inning2Runs = document.getElementById('inning2_runs');
             var inning2Wickets = document.getElementById('inning2_wickets');
 
+            var inning1Overs = document.getElementById('inning1_overs');
+            var inning1Balls = document.getElementById('inning1_balls');
+            var inning2Overs = document.getElementById('inning2_overs');
+            var inning2Balls = document.getElementById('inning2_balls');
+
             // Validation on form submit
             document.querySelector('form').addEventListener('submit', function(event) {
                 var runs1 = parseInt(inning1Runs.value);
                 var wickets1 = parseInt(inning1Wickets.value);
                 var runs2 = parseInt(inning2Runs.value);
                 var wickets2 = parseInt(inning2Wickets.value);
+
+                var overs1 = parseInt(inning1Overs.value);
+                var balls1 = parseInt(inning1Balls.value);
+                var overs2 = parseInt(inning2Overs.value);
+                var balls2 = parseInt(inning2Balls.value);
 
                 // Validate inning 2 runs and wickets
                 if (runs2 > runs1) {
@@ -33,6 +43,13 @@
                         event.preventDefault();
                         return;
                     }
+                }
+
+                // Validate inning 1 and inning 2 balls when overs played is 20
+                if ((overs1 === 20 && balls1 !== 0) || (overs2 === 20 && balls2 !== 0)) {
+                    alert('If overs played is 20, balls played must be 0.');
+                    event.preventDefault();
+                    return;
                 }
             });
         });
@@ -188,7 +205,7 @@
             echo "<input type='number' id='inning2_balls' name='inning2_balls' value='$inning2_balls' min='0' max='5' required>";
 
             echo "<br>";
-            echo "<input type='submit' value='Submit Score'>";
+            echo "<input type='submit' value='Update Score'>";
             echo "</form>";
             echo "</div>";
         } else {
