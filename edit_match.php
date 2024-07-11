@@ -34,12 +34,12 @@
                 // Validate inning 2 runs and wickets
                 if (runs2 > runs1) {
                     if (wickets2 === 10) {
-                        alert('Inning 2 cannot lose all 10 wickets to win.');
+                        alert('Team batting second cannot lose all 10 wickets to win.');
                         event.preventDefault();
                         return;
                     }
-                    if (runs2 > runs1 + 5) {
-                        alert('Inning 2 runs cannot exceed inning 1 runs by more than 5.');
+                    if (runs2 > runs1 + 6) {
+                        alert('Team batting second cannot score more than 6 runs to win.');
                         event.preventDefault();
                         return;
                     }
@@ -50,6 +50,15 @@
                     alert('If overs played is 20, balls played must be 0.');
                     event.preventDefault();
                     return;
+                }
+
+                // Confirmation alert if runs scored is zero for either inning
+                if (runs1 === 0 || runs2 === 0) {
+                    var confirmZeroRuns = confirm('The runs scored for one or both innings are zero. This will heavily impact the Net Run Rate for that particular team. Are you sure you want to continue with zero runs?');
+                    if (!confirmZeroRuns) {
+                        event.preventDefault();
+                        return;
+                    }
                 }
             });
         });
@@ -178,7 +187,7 @@
             echo "<p>$result</p>";
             echo "</div>";
 
-            // Display innings details with input fields
+            // Fetch innings details with input fields
             echo "<div class='innings'>";
             echo "<h3>Innings Details</h3>";
 

@@ -28,20 +28,36 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $inning2_balls = intval($_POST['inning2_balls']);
 
         // Calculate overs and balls for NRR based on wickets lost
-        if ($inning1_wickets == 10) {
+        if ($inning1_runs == 0) {
             $inning1_overs_nrr = 20;
             $inning1_balls_nrr = 0;
         } else {
-            $inning1_overs_nrr = $inning1_overs;
-            $inning1_balls_nrr = $inning1_balls;
+            if ($inning1_wickets == 10 || ($inning1_overs != 20 && $inning1_wickets != 10)) {
+                $inning1_overs_nrr = 20;
+                $inning1_balls_nrr = 0;
+            } else {
+                $inning1_overs_nrr = $inning1_overs;
+                $inning1_balls_nrr = $inning1_balls;
+            }
         }
 
-        if ($inning2_wickets == 10) {
+        if ($inning2_runs == 0) {
             $inning2_overs_nrr = 20;
             $inning2_balls_nrr = 0;
         } else {
-            $inning2_overs_nrr = $inning2_overs;
-            $inning2_balls_nrr = $inning2_balls;
+            // Handle the case where all runs are scored via no balls and wides
+            if ($inning2_overs == 0 && $inning2_balls == 0 && $inning2_runs > 0) {
+                // Assign a value representing minimum one ball faced to avoid 'division by zero error' while calculating NRR
+                echo "<script>alert('Team batting second won without facing any legal deliveries. Balls played are set to 1 for NRR calculation.');</script>";
+                $inning2_overs_nrr = 0;
+                $inning2_balls_nrr = 1;
+            } elseif ($inning2_wickets == 10 || ($inning2_runs < $inning1_runs && $inning2_wickets != 10)) {
+                $inning2_overs_nrr = 20;
+                $inning2_balls_nrr = 0;
+            } else {
+                $inning2_overs_nrr = $inning2_overs;
+                $inning2_balls_nrr = $inning2_balls;
+            }
         }
 
         // Calculate NRR for both teams

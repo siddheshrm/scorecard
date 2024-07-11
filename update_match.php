@@ -38,8 +38,8 @@
                         event.preventDefault();
                         return;
                     }
-                    if (runs2 > runs1 + 5) {
-                        alert('Team batting second cannot score more than 5 runs to win.');
+                    if (runs2 > runs1 + 6) {
+                        alert('Team batting second cannot score more than 6 runs to win.');
                         event.preventDefault();
                         return;
                     }
@@ -50,6 +50,15 @@
                     alert('If overs played is 20, balls played must be 0.');
                     event.preventDefault();
                     return;
+                }
+
+                // Confirmation alert if runs scored is zero for either inning
+                if (runs1 === 0 || runs2 === 0) {
+                    var confirmZeroRuns = confirm('The runs scored for one or both innings are zero. This will heavily impact the Net Run Rate for that particular team. Are you sure you want to continue with zero runs?');
+                    if (!confirmZeroRuns) {
+                        event.preventDefault();
+                        return;
+                    }
                 }
             });
         });

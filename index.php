@@ -20,7 +20,7 @@
         <input type="submit" value="Login">
     </form>
 
-    <p><a href="register.php">Don't have an account?</a></p>
+    <p>Don't have an account? <a href="register.php">Sign up here.</a></p>
     <p><a href="#" onclick="showMessage()">Forgot Password?</a></p><br>
 
     <p><a href="strike_rate/strike_rate.php">Strike Rate Calculator</a></p>
@@ -31,7 +31,7 @@
 
     <script>
         function showMessage() {
-            alert("Enter today's date in DD-MM-YYYY format as password to login");
+            alert("Enter today's date in dd-mm-yyyy format as password to login");
         }
     </script>
 </body>
