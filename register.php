@@ -18,7 +18,10 @@
         <input type="email" name="email" placeholder="Email*" required><br>
         <input type="text" name="favourite_ipl_team" placeholder="Favourite IPL Team"><br>
         <input type="text" name="mobile_number" placeholder="Mobile Number" maxlength="10"><br>
-        <input type="password" name="password" placeholder="Password*" required><br>
+        <div class="password-container">
+            <input type="password" id="password" name="password" placeholder="Password" required>
+            <span id="togglePassword" class="toggle-password">Show</span>
+        </div><br>
         <input type="submit" value="Submit">
     </form>
 
@@ -32,6 +35,19 @@
 
     <!-- Include Register Validation -->
     <?php include 'register_validation.php'; ?>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const togglePassword = document.querySelector('#togglePassword');
+            const password = document.querySelector('#password');
+
+            togglePassword.addEventListener('click', function() {
+                const type = password.getAttribute('type') === 'password' ? 'text' : 'password';
+                password.setAttribute('type', type);
+                this.textContent = type === 'password' ? 'Show' : 'Hide';
+            });
+        });
+    </script>
 </body>
 
 </html>

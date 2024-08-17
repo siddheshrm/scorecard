@@ -17,10 +17,11 @@ session_start();
     <form method="POST" action="login.php">
         <label for="username"></label>
         <input type="text" id="username" name="username" placeholder="Username" required><br>
-
         <label for="password"></label>
-        <input type="password" id="password" name="password" placeholder="Password" required><br>
-
+        <div class="password-container">
+            <input type="password" id="password" name="password" placeholder="Password" required>
+            <span id="togglePassword" class="toggle-password">Show</span>
+        </div><br>
         <input type="submit" value="Login">
     </form>
 
@@ -32,6 +33,19 @@ session_start();
 
     <!-- Include Trivia -->
     <?php include 'trivia.php'; ?>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const togglePassword = document.querySelector('#togglePassword');
+            const password = document.querySelector('#password');
+
+            togglePassword.addEventListener('click', function() {
+                const type = password.getAttribute('type') === 'password' ? 'text' : 'password';
+                password.setAttribute('type', type);
+                this.textContent = type === 'password' ? 'Show' : 'Hide';
+            });
+        });
+    </script>
 
     <?php
     if (isset($_SESSION['message'])) {
