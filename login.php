@@ -18,11 +18,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $row = $result->fetch_assoc();
         $stored_password = $row['password'];
 
-        // Check if the entered password matches the stored password or today's date in ddmmyyyy format
-        if ($password == $stored_password || $password == date('dmY')) {
-            // Password or today's date matches, login successful
+        if ($password == $stored_password) {
             $_SESSION['username'] = $username;
-
             // Check if the user is an admin
             if ($username == 'admin') {
                 header("Location: admin_dashboard.php");

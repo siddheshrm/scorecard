@@ -12,7 +12,7 @@
     <h2>Create Match</h2>
     <form id="createMatchForm" method="POST" action="match_scorecard.php">
         <label for="date">Date:</label>
-        <input type="date" id="date" name="date" required max="<?php echo date('Y-m-d'); ?>"><br><br>
+        <input type="date" id="date" name="date" required max="<?php echo date('Y-m-d'); ?>"><br>
 
         <label for="team1">Home Team:</label>
         <select id="team1" name="team1" onchange="updateVenue(); updateTossWonBy();" required>
@@ -28,7 +28,7 @@
                 }
             }
             ?>
-        </select><br><br>
+        </select><br>
 
         <label for="team2">Visiting Team:</label>
         <select id="team2" name="team2" onchange="updateVenue(); updateTossWonBy();" required>
@@ -43,24 +43,24 @@
                 }
             }
             ?>
-        </select><br><br>
+        </select><br>
 
         <label for="venue">Venue:</label>
         <input type="text" id="venue" name="venue" readonly>
-        <br><br>
+        <br>
 
         <label for="toss_won_by">Toss Won By:</label>
         <select id="toss_won_by" name="toss_won_by" required>
             <option value="">Select Team</option>
             <!-- Options will be dynamically filled based on home and away team selection -->
-        </select><br><br>
+        </select><br>
 
         <label for="decided_to">Decided To:</label>
         <select id="decided_to" name="decided_to" required>
             <option value="">Select</option>
             <option value="bat">Bat</option>
             <option value="bowl">Bowl</option>
-        </select><br><br>
+        </select><br>
 
         <input type="submit" value="Create Match">
     </form>
