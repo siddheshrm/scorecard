@@ -29,38 +29,50 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         if ($stmt->num_rows > 0) {
             echo '<script>alert("Username already exists. Please choose a different username.")</script>';
         } else {
-            $stmt = $conn->prepare("INSERT INTO users (name, age, email, mobile_number, favourite_ipl_team, password) VALUES (?, ?, ?, ?, ?, ?)");
-            // Bind parameters
-            if (empty($email) && empty($mobile_number)) {
-                $stmt->bind_param("sissss", $name, $age, $nullValue, $nullValue, $favourite_ipl_team, $password);
-            } elseif (empty($email) && !empty($mobile_number)) {
-                $stmt->bind_param("sissss", $name, $age, $nullValue, $mobile_number, $favourite_ipl_team, $password);
-            } elseif (!empty($email) && empty($mobile_number)) {
-                $stmt->bind_param("sissss", $name, $age, $email, $nullValue, $favourite_ipl_team, $password);
+            // Check if email already exists
+            $email_lower = strtolower($email);
+            $stmt = $conn->prepare("SELECT id FROM users WHERE LOWER(email) = ?");
+            $stmt->bind_param("s", $email_lower);
+            $stmt->execute();
+            $stmt->store_result();
+
+            if ($stmt->num_rows > 0) {
+                echo '<script>alert("Email already exists. Please use a different email to create accout.")</script>';
             } else {
-                $stmt->bind_param("sissss", $name, $age, $email, $mobile_number, $favourite_ipl_team, $password);
-            }
+                // Hash the password
+                $hashed_password = password_hash($password, PASSWORD_BCRYPT);
 
-            try {
-                if ($stmt->execute()) {
-                    // Redirect with success message
-                    session_start();
-                    echo '<script>alert("Your registration is completed successfully. Please login to continue.")</script>';
-                    echo '<script>window.location.href = "index.php";</script>';
-                    exit();
+                $stmt = $conn->prepare("INSERT INTO users (name, age, email, mobile_number, favourite_ipl_team, password) VALUES (?, ?, ?, ?, ?, ?)");
+                // Bind parameters
+                if (empty($email) && empty($mobile_number)) {
+                    $stmt->bind_param("sissss", $name, $age, $nullValue, $nullValue, $favourite_ipl_team, $hashed_password);
+                } elseif (empty($email) && !empty($mobile_number)) {
+                    $stmt->bind_param("sissss", $name, $age, $nullValue, $mobile_number, $favourite_ipl_team, $hashed_password);
+                } elseif (!empty($email) && empty($mobile_number)) {
+                    $stmt->bind_param("sissss", $name, $age, $email, $nullValue, $favourite_ipl_team, $hashed_password);
                 } else {
-                    echo "Error: " . $stmt->error;
+                    $stmt->bind_param("sissss", $name, $age, $email, $mobile_number, $favourite_ipl_team, $hashed_password);
                 }
-            } catch (mysqli_sql_exception $e) {
-                // Handle specific exceptions, e.g., unique constraint violation
-                echo '<script>alert("Error: Unable to register user. Please try again later.")</script>';
-                // Log the detailed error for debugging
-                error_log("SQL Error: " . $e->getMessage());
-            }
 
-            $stmt->close();
+                try {
+                    if ($stmt->execute()) {
+                        // Redirect with success message
+                        session_start();
+                        echo '<script>alert("Your registration is completed successfully. Please login to continue.")</script>';
+                        echo '<script>window.location.href = "index.php";</script>';
+                        exit();
+                    } else {
+                        echo "Error: " . $stmt->error;
+                    }
+                } catch (mysqli_sql_exception $e) {
+                    // Handle specific exceptions, e.g., unique constraint violation
+                    echo '<script>alert("Error: Unable to register user. Please try again later.")</script>';
+                    // Log the detailed error for debugging
+                    error_log("SQL Error: " . $e->getMessage());
+                }
+                $stmt->close();
+            }
         }
     }
-
     $conn->close();
 }

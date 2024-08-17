@@ -28,15 +28,16 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $result = $stmt->get_result();
 
     if ($result->num_rows === 0) {
-        $_SESSION['error'] = 'Invalid or expired request. Please create new request to update password.';
+        $_SESSION['error'] = 'Invalid or expired request. Please create a new request to update the password.';
         header('Location: ../password_recovery/reset_password.php?token=' . urlencode($token));
         exit();
     }
 
-    // Update the password
+    // Hash the new password
+    $hashed_password = password_hash($password, PASSWORD_DEFAULT);
     $sql = "UPDATE users SET password = ?, reset_token = NULL, token_expiry = NULL WHERE reset_token = ?";
     $stmt = $conn->prepare($sql);
-    $stmt->bind_param("ss", $password, $token);
+    $stmt->bind_param("ss", $hashed_password, $token);
     if ($stmt->execute()) {
         $_SESSION['message'] = 'Your password has been reset successfully. You can now login.';
         header('Location: ../index.php');

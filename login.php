@@ -18,7 +18,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $row = $result->fetch_assoc();
         $stored_password = $row['password'];
 
-        if ($password == $stored_password) {
+        // Verify the hashed password
+        if (password_verify($password, $stored_password)) {
             $_SESSION['username'] = $username;
             // Check if the user is an admin
             if ($username == 'admin') {
@@ -41,5 +42,4 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         exit();
     }
 }
-
 $conn->close();
