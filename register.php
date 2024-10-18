@@ -4,7 +4,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Register here</title>
+    <title>Register to scorecard.com</title>
+    <link rel="icon" href="./media/scorecard.com.png" type="image/png">
     <link rel="stylesheet" href="css/style.css">
 
 </head>
@@ -27,7 +28,7 @@
 
     <p>Already have an account? <a href="index.php">Login here</a></p><br>
 
-    <p><a href="strike rate/strike_rate.php">Strike Rate Calculator</a></p>
+    <p><a href="strike_rate/strike_rate.php">Strike Rate Calculator</a></p>
     <p><a href="dls/dls_calculator.php">Duckworth-Lewis-Stern Par Score Calculator</a></p><br>
 
     <!-- Include Trivia -->
