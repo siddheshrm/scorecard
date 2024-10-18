@@ -1,0 +1,157 @@
+[
+  {
+    "id": 1,
+    "title": "First Cricket Match",
+    "description": "The first recorded cricket match took place in 1646 in Kent, England and the first Test match was played between Australia and England in 1877 at the Melbourne Cricket Ground"
+  },
+  {
+    "id": 2,
+    "title": "Oldest Cricket Club",
+    "description": "The Marylebone Cricket Club (MCC), founded in 1787, is the oldest cricket club in the world."
+  },
+  {
+    "id": 3,
+    "title": "Most World Cup Final appearances",
+    "description": "Two Australians are the only players who have appeared in four World Cup finals - in 1996, 1999, 2003 and 2007. One is Glenn McGrath and the other one is Ricky Ponting."
+  },
+  {
+    "id": 4,
+    "title": "Sachin Tendulkar's Records",
+    "description": "Sachin Tendulkar holds the record for the most runs in both Test matches and One-Day Internationals (ODIs)."
+  },
+  {
+    "id": 5,
+    "title": "Don Bradman's Batting Average",
+    "description": "Sir Don Bradman, considered one of the greatest batsmen of all time, had an average of 99.94 in Test cricket."
+  },
+  {
+    "id": 6,
+    "title": "T20 Cricket",
+    "description": "Twenty20 cricket, a shorter format of the game, was introduced in 2003. It has since become very popular."
+  },
+  {
+    "id": 7,
+    "title": "Cricket World Cup",
+    "description": "The Cricket World Cup is held every four years. The first tournament took place in 1975 in England."
+  },
+  {
+    "id": 8,
+    "title": "Highest Individual Score",
+    "description": "Brian Lara holds the record for the highest individual score in a Test innings, with 400 not out against England in 2004."
+  },
+  {
+    "id": 9,
+    "title": "First ODI Hat-Trick",
+    "description": "The first hat-trick in One-Day Internationals was taken by Jalal-ud-Din of Pakistan against Australia in 1982."
+  },
+  {
+    "id": 10,
+    "title": "First T20 International",
+    "description": "The first T20 International match was played between Australia and New Zealand in 2005."
+  },
+  {
+    "id": 11,
+    "title": "Most Sixes in an ODI",
+    "description": "Rohit Sharma of India holds the record for hitting the most sixes in an ODI inning, with 16 sixes against Australia in 2013."
+  },
+  {
+    "id": 12,
+    "title": "First Women's Cricket Match",
+    "description": "The first recorded women's cricket match took place in 1745 in Surrey, England."
+  },
+  {
+    "id": 13,
+    "title": "First Cricket World Cup Win",
+    "description": "The West Indies won the first two Cricket World Cups in 1975 and 1979."
+  },
+  {
+    "id": 14,
+    "title": "Longest Cricket Match",
+    "description": "The longest cricket match was a Test match between England and South Africa in 1939, which lasted 12 days."
+  },
+  {
+    "id": 15,
+    "title": "First Day-Night Test Match",
+    "description": "The first day-night Test match was played between Australia and New Zealand in 2015 at the Adelaide Oval."
+  },
+  {
+    "id": 16,
+    "title": "First Double Century in ODIs",
+    "description": "Sachin Tendulkar was the first player to score a double century in an ODI, scoring 200* against South Africa in 2010."
+  },
+  {
+    "id": 17,
+    "title": "Fastest Century in ODIs",
+    "description": "AB de Villiers holds the record for the fastest century in ODIs, reaching 100 in just 31 balls against the West Indies in 2015."
+  },
+  {
+    "id": 18,
+    "title": "First Tied Test Match",
+    "description": "The first tied Test match was played between Australia and the West Indies in 1960 at the Brisbane Cricket Ground."
+  },
+  {
+    "id": 19,
+    "title": "Most Wickets in Test Cricket",
+    "description": "Muttiah Muralitharan of Sri Lanka holds the record for the most wickets in Test cricket, with 800 wickets."
+  },
+  {
+    "id": 20,
+    "title": "Fastest Ball in Cricket",
+    "description": "Shoaib Akhtar of Pakistan bowled the fastest recorded ball in cricket, clocking at 161.3 km/h (100.23 mph) against England in 2003."
+  },
+  {
+    "id": 21,
+    "title": "First Hat-Trick in Test Cricket",
+    "description": "The first hat-trick in Test cricket was taken by Fred Spofforth of Australia against England in 1879."
+  },
+  {
+    "id": 22,
+    "title": "Most Centuries in Test Cricket",
+    "description": "Sachin Tendulkar holds the record for the most centuries in Test cricket, with 51 centuries."
+  },
+  {
+    "id": 23,
+    "title": "First IPL Match",
+    "description": "The first match of the Indian Premier League (IPL) was played in 2008, with Kolkata Knight Riders defeating Royal Challengers Bangalore."
+  },
+  {
+    "id": 24,
+    "title": "First Pink Ball Test Match",
+    "description": "The first pink ball Test match was played between Australia and New Zealand in 2015 at the Adelaide Oval."
+  },
+  {
+    "id": 25,
+    "title": "Most Runs in a Calendar Year",
+    "description": "Mohammad Yousuf of Pakistan scored the most runs in a calendar year in Test cricket, with 1,788 runs in 2006."
+  },
+  {
+    "id": 26,
+    "title": "First Cricket World Cup for Women",
+    "description": "The first Women's Cricket World Cup was held in 1973, two years before the men's tournament."
+  },
+  {
+    "id": 27,
+    "title": "Youngest Test Cricketer",
+    "description": "Hasan Raza of Pakistan is the youngest cricketer to play in a Test match, debuting at the age of 14 years and 227 days."
+  },
+  {
+    "id": 28,
+    "title": "Most Sixes in International Cricket",
+    "description": "Chris Gayle of the West Indies holds the record for the most sixes in international cricket across all formats."
+  },
+  {
+    "id": 29,
+    "title": "First Cricket Commentary",
+    "description": "The first live cricket commentary was broadcast by the BBC in 1927."
+  },
+  {
+    "id": 30,
+    "title": "First Day-Night ODI",
+    "description": "The first day-night ODI was played between Australia and India in 1979 at the Sydney Cricket Ground."
+  },
+  {
+    "id": 31,
+    "title": "Most Matches as Captain",
+    "description": "Ricky Ponting of Australia has captained his country in the most international matches, across all formats."
+  }
+]

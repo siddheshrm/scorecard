@@ -33,7 +33,7 @@ session_start();
     <p><a href="dls/dls_calculator.php">Duckworth-Lewis-Stern Par Score Calculator</a></p><br>
 
     <!-- Include Trivia -->
-    <?php include 'trivia.php'; ?>
+    <?php include './trivia/trivia.php'; ?>
 
     <script>
         document.addEventListener('DOMContentLoaded', function() {

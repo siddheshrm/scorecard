@@ -142,7 +142,7 @@
     <p><a href="../index.php">Go to homepage</a></p><br>
 
     <!-- Include Trivia -->
-    <?php include '../trivia.php'; ?>
+    <?php include '../trivia/trivia.php'; ?>
 
 </body>
 
