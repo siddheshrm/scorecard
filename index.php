@@ -11,36 +11,28 @@ session_start();
     <title>Welcome to scorecard.com</title>
     <link rel="icon" href="./media/scorecard.com.png" type="image/png">
     <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/table.css">
 </head>
 
 <body>
     <h2>Welcome to <i>scorecard.com</i></h2>
-    <form method="POST" action="login.php">
-        <label for="username"></label>
-        <input type="text" id="username" name="username" placeholder="Username" required><br>
-        <label for="password"></label>
-        <div class="password-container">
-            <input type="password" id="password" name="password" placeholder="Password" required>
-            <span id="togglePassword" class="toggle-password">Show</span>
-        </div><br>
-        <input type="submit" value="Login">
-    </form>
+    <?php include 'points_table.php'; ?>
+    <p>
+        <a href="admin_login.php">Admin Login</a>
+    </p>
 
-    <p>Don't have an account? <a href="register.php">Sign up here.</a></p>
-    <p><a href="password_recovery/forgot_password.php">Forgot Password?</a></p><br>
-
-    <p><a href="strike_rate/strike_rate.php">Strike Rate Calculator</a></p>
-    <p><a href="dls/dls_calculator.php">Duckworth-Lewis-Stern Par Score Calculator</a></p><br>
+    <p><a href="strike_rate/strike_rate.php">Strike Rate Calculator</a> | <a
+            href="dls/dls_calculator.php">Duckworth-Lewis-Stern Par Score Calculator</a></p><br>
 
     <!-- Include Trivia -->
     <?php include './trivia/trivia.php'; ?>
 
     <script>
-        document.addEventListener('DOMContentLoaded', function() {
+        document.addEventListener('DOMContentLoaded', function () {
             const togglePassword = document.querySelector('#togglePassword');
             const password = document.querySelector('#password');
 
-            togglePassword.addEventListener('click', function() {
+            togglePassword.addEventListener('click', function () {
                 const type = password.getAttribute('type') === 'password' ? 'text' : 'password';
                 password.setAttribute('type', type);
                 this.textContent = type === 'password' ? 'Show' : 'Hide';

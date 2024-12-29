@@ -1,34 +1,34 @@
+<?php
+session_start();
+?>
 <!DOCTYPE html>
 <html lang="en">
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Register to scorecard.com</title>
+    <title>Admin Login</title>
     <link rel="icon" href="./media/scorecard.com.png" type="image/png">
     <link rel="stylesheet" href="css/style.css">
-
 </head>
 
 <body>
     <h2>Welcome to <i>scorecard.com</i></h2>
-    <h3>Register New Admin</h3>
-    <form method="POST" action="register.php">
-        <input type="text" name="name" placeholder="name*" required><br>
-        <input type="text" name="username" placeholder="username*" required><br>
-        <input type="number" name="age" placeholder="age*" required min="13" max="99"><br>
-        <input type="email" name="email" placeholder="email*" required><br>
+    <h3>Admin Login</h3>
+    <form method="POST" action="login.php">
+        <label for="username"></label>
+        <input type="text" id="username" name="username" placeholder="Username" required><br>
+        <label for="password"></label>
         <div class="password-container">
-            <input type="password" id="password" name="password" placeholder="password*" required>
+            <input type="password" id="password" name="password" placeholder="Password" required>
             <span id="togglePassword" class="toggle-password">Show</span>
         </div><br>
-        <input type="submit" value="Create New Admin">
+        <input type="submit" value="Login">
     </form>
 
-    <p><a href="admin_dashboard.php">Go To Dashboard</a></p><br>
-
-    <!-- Include Register Validation -->
-    <?php include 'register_validation.php'; ?>
+    <p>
+        <a href="password_recovery/forgot_password.php">Forgot Password</a> | <a href="index.php">Homepage</a>
+    </p>
 
     <script>
         document.addEventListener('DOMContentLoaded', function () {
@@ -42,6 +42,13 @@
             });
         });
     </script>
+
+    <?php
+    if (isset($_SESSION['message'])) {
+        echo "<script>alert('" . htmlspecialchars($_SESSION['message'], ENT_QUOTES, 'UTF-8') . "');</script>";
+        unset($_SESSION['message']);
+    }
+    ?>
 </body>
 
 </html>

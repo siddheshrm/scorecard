@@ -1,28 +1,38 @@
 <?php
+session_start();
 include 'config.php';
 
+// Check if the logged-in user is a superadmin
+$logged_in_username = $_SESSION['username'] ?? '';
+$superadmin_username = 'SUPER_ADMIN'; // Replace with your super admin's username
+
+if (strcasecmp($logged_in_username, $superadmin_username) !== 0) {
+    echo '<script>alert("You do not have the necessary permissions to create an admin account.")</script>';
+    echo '<script>window.location.href = "admin_dashboard.php";</script>';
+    exit;
+}
+
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    $name = strtolower($_POST['name']);
+    $name = trim($_POST['name']);
+    $username = trim($_POST['username']);
     $age = $_POST['age'];
-    $email = $_POST['email'];
-    $mobile_number = isset($_POST['mobile_number']) ? $_POST['mobile_number'] : null;
-    $favourite_ipl_team = $_POST['favourite_ipl_team'];
+    $email = trim($_POST['email']);
     $password = $_POST['password'];
 
     // Validate input
-    if (strlen($name) < 5 || preg_match('/[^a-z0-9_]/', $name)) {
+    if (strlen($name) < 5 || preg_match('/[^a-zA-Z ]/', $name)) {
+        echo '<script>alert("Name must be at least 5 characters long and contain only letters and spaces.")</script>';
+    } elseif (strlen($username) < 5 || preg_match('/[^A-Za-z0-9_]/', $username)) {
         echo '<script>alert("Username must be at least 5 characters long and contain only letters, digits, and underscores.")</script>';
     } elseif (empty($age) || $age < 13 || $age > 99) {
         echo '<script>alert("Age must be between 13 and 99.")</script>';
     } elseif (!empty($email) && !filter_var($email, FILTER_VALIDATE_EMAIL)) {
         echo '<script>alert("Invalid email address.")</script>';
-    } elseif (!empty($mobile_number) && !preg_match('/^\d{10}$/', $mobile_number)) {
-        echo '<script>alert("Mobile number must be exactly 10 digits and contain only numbers.")</script>';
     } elseif (strlen($password) < 8) {
         echo '<script>alert("Password must be at least 8 characters long.")</script>';
     } else {
-        $stmt = $conn->prepare("SELECT id FROM users WHERE LOWER(name) = ?");
-        $stmt->bind_param("s", $name);
+        $stmt = $conn->prepare("SELECT id FROM users WHERE LOWER(username) = ?");
+        $stmt->bind_param("s", $username);
         $stmt->execute();
         $stmt->store_result();
 
@@ -37,30 +47,20 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             $stmt->store_result();
 
             if ($stmt->num_rows > 0) {
-                echo '<script>alert("Email already exists. Please use a different email to create accout.")</script>';
+                echo '<script>alert("Email already exists. Please use a different email to create an account.")</script>';
             } else {
                 // Hash the password
                 $hashed_password = password_hash($password, PASSWORD_BCRYPT);
 
-                $stmt = $conn->prepare("INSERT INTO users (name, age, email, mobile_number, favourite_ipl_team, password) VALUES (?, ?, ?, ?, ?, ?)");
+                $stmt = $conn->prepare("INSERT INTO users (username, name, age, email, password) VALUES (?, ?, ?, ?, ?)");
                 // Bind parameters
-                if (empty($email) && empty($mobile_number)) {
-                    $stmt->bind_param("sissss", $name, $age, $nullValue, $nullValue, $favourite_ipl_team, $hashed_password);
-                } elseif (empty($email) && !empty($mobile_number)) {
-                    $stmt->bind_param("sissss", $name, $age, $nullValue, $mobile_number, $favourite_ipl_team, $hashed_password);
-                } elseif (!empty($email) && empty($mobile_number)) {
-                    $stmt->bind_param("sissss", $name, $age, $email, $nullValue, $favourite_ipl_team, $hashed_password);
-                } else {
-                    $stmt->bind_param("sissss", $name, $age, $email, $mobile_number, $favourite_ipl_team, $hashed_password);
-                }
+                $stmt->bind_param("ssiss", $username, $name, $age, $email, $hashed_password);
 
                 try {
                     if ($stmt->execute()) {
                         // Redirect with success message
-                        session_start();
-                        echo '<script>alert("Your registration is completed successfully. Please login to continue.")</script>';
-                        echo '<script>window.location.href = "index.php";</script>';
-                        exit();
+                        echo '<script>alert("Admin registered successfully.");</script>';
+                        echo '<script>window.location.href = "admin_dashboard.php";</script>';
                     } else {
                         echo "Error: " . $stmt->error;
                     }
@@ -76,3 +76,4 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     }
     $conn->close();
 }
+?>
