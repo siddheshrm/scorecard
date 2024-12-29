@@ -20,23 +20,23 @@
 
     <form action="dls_calculator.php" method="post">
         <!-- DLS Scenarios -->
-        <label for="matchSituation">Match Situation To Determine Par Score</label>
+        <label for="matchSituation">* Match Situation To Determine Par Score</label>
         <select id="matchSituation" name="matchSituation" required>
-            <option value="teamAInterrupted">Team batting first could not complete 50 overs</option>
-            <option value="teamBPartiallyPlayed">Team batting second played some overs, but could not complete 50 overs</option>
-            <option value="teamBNotStarted">Inning 2 reduced by some overs</option>
+            <option value="teamAInterrupted">Interruption to Team 's innings</option>
+            <option value="teamBPartiallyPlayed">Interruption to Team 2's innings</option>
+            <option value="teamBNotStarted">Premature curtailment of Team 2's innings</option>
         </select><br>
         <hr>
 
         <!-- Team Batting First -->
         <label>Team Batting First</label>
-        <label for="teamARuns">Runs Scored:</label>
+        <label for="teamARuns">* Runs Scored:</label>
         <input type="number" id="teamARuns" name="teamARuns" value="<?php if (isset($_POST['teamARuns'])) echo $_POST['teamARuns']; ?>" required><br>
 
-        <label for="teamAWickets">Wickets Lost:</label>
+        <label for="teamAWickets">* Wickets Lost:</label>
         <input type="number" id="teamAWickets" name="teamAWickets" min="0" max="10" value="<?php if (isset($_POST['teamAWickets'])) echo $_POST['teamAWickets']; ?>" required><br>
 
-        <label for="teamAOvers">Overs Completed:</label>
+        <label for="teamAOvers">* Overs Completed:</label>
         <input type="number" id="teamAOvers" name="teamAOvers" min="0" max="50" value="<?php if (isset($_POST['teamAOvers'])) echo $_POST['teamAOvers']; ?>" required><br>
         <hr>
 
