@@ -16,7 +16,8 @@
     <div class="container">
         <h2>Reset Your Password</h2>
         <form action="reset_password_handler.php" method="post" onsubmit="return validateForm()">
-            <input type="hidden" name="token" value="<?php echo htmlspecialchars($_GET['token']); ?>">
+            <input type="hidden" name="token"
+                value="<?php echo isset($_GET['token']) ? htmlspecialchars($_GET['token']) : ''; ?>">
             <label for="password">New Password:</label>
             <div class="password-container">
                 <input type="password" id="password" name="password" required>
@@ -33,19 +34,19 @@
         <p><a href="../index.php">Go to homepage</a></p><br>
 
         <script>
-            document.addEventListener('DOMContentLoaded', function() {
+            document.addEventListener('DOMContentLoaded', function () {
                 const togglePassword1 = document.querySelector('#togglePassword1');
                 const password = document.querySelector('#password');
                 const togglePassword2 = document.querySelector('#togglePassword2');
                 const confirmPassword = document.querySelector('#confirm_password');
 
-                togglePassword1.addEventListener('click', function() {
+                togglePassword1.addEventListener('click', function () {
                     const type = password.getAttribute('type') === 'password' ? 'text' : 'password';
                     password.setAttribute('type', type);
                     this.textContent = type === 'password' ? 'Show' : 'Hide';
                 });
 
-                togglePassword2.addEventListener('click', function() {
+                togglePassword2.addEventListener('click', function () {
                     const type = confirmPassword.getAttribute('type') === 'password' ? 'text' : 'password';
                     confirmPassword.setAttribute('type', type);
                     this.textContent = type === 'password' ? 'Show' : 'Hide';
