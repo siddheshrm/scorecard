@@ -1,3 +1,8 @@
+<?php
+include 'session_handler.php';
+include 'config.php';
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -9,7 +14,7 @@
     <link rel="stylesheet" href="css/update_match.css">
 
     <script>
-        document.addEventListener('DOMContentLoaded', function() {
+        document.addEventListener('DOMContentLoaded', function () {
             var inning1Runs = document.getElementById('inning1_runs');
             var inning1Wickets = document.getElementById('inning1_wickets');
             var inning2Runs = document.getElementById('inning2_runs');
@@ -21,7 +26,7 @@
             var inning2Balls = document.getElementById('inning2_balls');
 
             // Validation on form submit
-            document.querySelector('form').addEventListener('submit', function(event) {
+            document.querySelector('form').addEventListener('submit', function (event) {
                 var runs1 = parseInt(inning1Runs.value);
                 var wickets1 = parseInt(inning1Wickets.value);
                 var runs2 = parseInt(inning2Runs.value);
@@ -71,7 +76,6 @@
     <h2>Edit Match</h2>
 
     <?php
-    include 'config.php';
 
     // Check if match_no parameter is provided
     if (isset($_GET['match_no']) && !empty($_GET['match_no'])) {

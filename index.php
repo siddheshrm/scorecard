@@ -27,19 +27,6 @@ session_start();
     <!-- Include Trivia -->
     <?php include './trivia/trivia.php'; ?>
 
-    <script>
-        document.addEventListener('DOMContentLoaded', function () {
-            const togglePassword = document.querySelector('#togglePassword');
-            const password = document.querySelector('#password');
-
-            togglePassword.addEventListener('click', function () {
-                const type = password.getAttribute('type') === 'password' ? 'text' : 'password';
-                password.setAttribute('type', type);
-                this.textContent = type === 'password' ? 'Show' : 'Hide';
-            });
-        });
-    </script>
-
     <?php
     if (isset($_SESSION['message'])) {
         echo "<script>alert('" . htmlspecialchars($_SESSION['message'], ENT_QUOTES, 'UTF-8') . "');</script>";

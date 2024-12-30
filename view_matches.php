@@ -1,3 +1,8 @@
+<?php
+include 'session_handler.php';
+include 'config.php';
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -13,12 +18,9 @@
     <h2>Tournament History</h2>
 
     <?php
-    // Include the configuration file
-    include 'config.php';
-
     // Query to retrieve all data from tournament_data table
     $sql = "SELECT * FROM tournament_data ORDER BY date DESC"; // Order by match_no in descending order
-
+    
     $result = $conn->query($sql);
 
     if ($result->num_rows > 0) {
@@ -79,7 +81,7 @@
 
         // Add event listener to update buttons for extra caution, in case gets clicked through some external script or browser quirk
         document.querySelectorAll('.update-btn').forEach(button => {
-            button.addEventListener('click', function(event) {
+            button.addEventListener('click', function (event) {
                 updateMatch(button.getAttribute('data-match-no'), button.getAttribute('data-result'));
             });
         });

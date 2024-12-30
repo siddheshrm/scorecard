@@ -22,7 +22,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         if (password_verify($password, $stored_password)) {
             // Store the username and email in session
             $_SESSION['username'] = $username;
-            $_SESSION['email'] = $email;
+            // $_SESSION['email'] = $email;
 
             // Redirect to the dashboard
             header("Location: admin_dashboard.php");

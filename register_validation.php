@@ -1,5 +1,5 @@
 <?php
-session_start();
+include 'session_handler.php';
 include 'config.php';
 
 // Check if the logged-in user is a superadmin

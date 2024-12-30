@@ -1,3 +1,8 @@
+<?php
+include 'session_handler.php';
+include 'config.php';
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -20,7 +25,6 @@
             <option value="">Select Team</option>
             <!-- Populate team options dynamically -->
             <?php
-            include 'config.php';
             $sql = "SELECT short_name, team_name FROM teams";
             $result = $conn->query($sql);
             if ($result->num_rows > 0) {
@@ -129,12 +133,12 @@
             }
         }
 
-        document.addEventListener("DOMContentLoaded", function() {
+        document.addEventListener("DOMContentLoaded", function () {
             updateVenue();
             updateTossWonBy();
         });
 
-        document.getElementById("createMatchForm").addEventListener("submit", function(event) {
+        document.getElementById("createMatchForm").addEventListener("submit", function (event) {
             if (!confirm("Are you sure you want to create this match?")) {
                 event.preventDefault(); // Prevent form submission if user cancels
             }

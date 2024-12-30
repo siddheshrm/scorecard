@@ -1,4 +1,5 @@
 <?php
+include 'session_handler.php';
 include 'config.php';
 
 // Check if match_no parameter is provided
