@@ -1,5 +1,5 @@
 body {
-  font-family: Arial, sans-serif;
+  font-family: "Open Sans", sans-serif;
   line-height: 1.6;
   background-color: #f0f0f0;
 }
@@ -34,8 +34,14 @@ input[type="submit"] {
 
 input[type="submit"] {
   background-color: #4caf50;
-  color: white;
+  color: #fff;
+  font-family: "Open Sans", sans-serif;
+  padding: 10px;
+  margin-right: 5px;
   cursor: pointer;
+  border: none;
+  border-radius: 4px;
+  font-size: 16px;
 }
 
 input[type="submit"]:hover {
@@ -47,7 +53,7 @@ a {
 }
 
 a:hover {
-  text-decoration: underline;
+  color: #0056b3;
 }
 
 /* Specific styles for DLS calculator */
@@ -61,6 +67,7 @@ a:hover {
 }
 
 select#matchSituation {
+  font-family: "Open Sans", sans-serif;
   padding: 8px;
   font-size: 16px;
   border: 1px solid #ccc;

@@ -185,8 +185,7 @@ include 'config.php';
     $conn->close();
     ?>
 
-    <p><a href="view_matches.php">Update Existing Match Data</a></p>
-    <p><a href="admin_dashboard.php">Dashboard</a></p>
+    <p><a href="view_matches.php">See All Matches</a> | <a href="admin_dashboard.php">Go To Dashboard</a></p>
     <p><a href="index.php">Logout</a></p>
 </body>
 

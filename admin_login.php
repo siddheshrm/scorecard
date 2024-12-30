@@ -8,6 +8,9 @@ session_start();
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Admin Login</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,300..800;1,300..800&display=swap" rel="stylesheet">
     <link rel="icon" href="./media/scorecard.com.png" type="image/png">
     <link rel="stylesheet" href="css/style.css">
 </head>
@@ -17,10 +20,10 @@ session_start();
     <h3>Admin Login</h3>
     <form method="POST" action="login.php">
         <label for="username"></label>
-        <input type="text" id="username" name="username" placeholder="Username" required><br>
+        <input type="text" id="username" name="username" placeholder="username" required><br>
         <label for="password"></label>
         <div class="password-container">
-            <input type="password" id="password" name="password" placeholder="Password" required>
+            <input type="password" id="password" name="password" placeholder="password" required>
             <span id="togglePassword" class="toggle-password">Show</span>
         </div><br>
         <input type="submit" value="Login">

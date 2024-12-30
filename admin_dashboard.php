@@ -25,6 +25,9 @@ if ($result->num_rows > 0) {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Admin Dashboard</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,300..800;1,300..800&display=swap" rel="stylesheet">
     <link rel="icon" href="./media/scorecard.com.png" type="image/png">
     <link rel="stylesheet" href="css/table.css">
 </head>
@@ -33,7 +36,7 @@ if ($result->num_rows > 0) {
     <h2>Welcome to dashboard, <?php echo $name; ?>.</h2>
     <?php include 'points_table.php'; ?>
     <p><a href="register.php">Register New Admin</p>
-    <p><a href="create_match.php">Insert New Match Data</a> | <a href="view_matches.php">Update Existing Match Data</a>
+    <p><a href="create_match.php">Add New Match</a> | <a href="view_matches.php">See All Matches</a>
     </p>
     <p><a href="logout.php">Logout</a></p>
 </body>

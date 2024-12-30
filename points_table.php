@@ -25,7 +25,7 @@ if ($result->num_rows > 0) {
 }
 ?>
 
-<h3>IPL-2023 Points Table</h3>
+<h3>IPL 2024 Points Table</h3>
 <table>
     <tr>
         <th>Position</th>

@@ -1,5 +1,5 @@
 body {
-  font-family: Arial, sans-serif;
+  font-family: "Open Sans", sans-serif;
   line-height: 1.6;
   background-color: #f4f4f4;
   margin: 0;
@@ -46,11 +46,13 @@ table td {
 
 .update-btn,
 .delete-btn {
-  padding: 8px 15px;
+  font-family: "Open Sans", sans-serif;
+  padding: 10px;
   margin-right: 5px;
   cursor: pointer;
   border: none;
-  border-radius: 5px;
+  border-radius: 4px;
+  font-size: 16px;
 }
 
 .update-btn {
@@ -81,6 +83,5 @@ a {
 }
 
 a:hover {
-  text-decoration: underline;
   color: #0056b3;
 }

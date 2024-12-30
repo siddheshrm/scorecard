@@ -9,13 +9,16 @@ include 'config.php';
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Create Match</title>
+    <title>Add New Match</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,300..800;1,300..800&display=swap" rel="stylesheet">
     <link rel="icon" href="./media/scorecard.com.png" type="image/png">
     <link rel="stylesheet" href="css/create_match.css">
 </head>
 
 <body>
-    <h2>Create Match</h2>
+    <h2>Add New Match</h2>
     <form id="createMatchForm" method="POST" action="match_scorecard.php">
         <label for="date">Date:</label>
         <input type="date" id="date" name="date" required max="<?php echo date('Y-m-d'); ?>"><br>
@@ -70,8 +73,7 @@ include 'config.php';
         <input type="submit" value="Create Match">
     </form>
 
-    <p><a href="admin_dashboard.php">Dashboard</a></p>
-    <p><a href="view_matches.php">Update Existing Match Data</a></p>
+    <p><a href="view_matches.php">See All Matches</a> | <a href="admin_dashboard.php">Go To Dashboard</a></p>
     <p><a href="index.php">Logout</a></p>
 
     <script>

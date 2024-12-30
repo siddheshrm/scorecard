@@ -1,5 +1,5 @@
 body {
-  font-family: Arial, sans-serif;
+  font-family: "Open Sans", sans-serif;
   background-color: #f4f4f4;
   margin: 0;
   padding: 0;
@@ -52,22 +52,27 @@ h2 {
 }
 
 .innings input[type="number"] {
-  width: calc(100% - 10px);
+  font-family: "Open Sans", sans-serif;
+  width: 100%;
+  max-width: 1000px;
   padding: 10px;
   margin-bottom: 15px;
   border: 1px solid #ddd;
   border-radius: 4px;
   font-size: 16px;
+  box-sizing: border-box;
 }
 
-.innings input[type="submit"] {
+input[type="submit"] {
+  font-family: "Open Sans", sans-serif;
   width: 100%;
-  background-color: #007bff;
+  padding: 10px;
+  background: #007bff;
   color: #fff;
   border: none;
-  padding: 12px;
-  font-size: 16px;
+  border-radius: 4px;
   cursor: pointer;
+  font-size: 16px;
 }
 
 .innings input[type="submit"]:hover {
@@ -84,6 +89,5 @@ a {
 }
 
 a:hover {
-  text-decoration: underline;
   color: #0056b3;
 }
