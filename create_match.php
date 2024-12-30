@@ -74,7 +74,7 @@ include 'config.php';
     </form>
 
     <p><a href="view_matches.php">See All Matches</a> | <a href="admin_dashboard.php">Go To Dashboard</a></p>
-    <p><a href="index.php">Logout</a></p>
+    <p><a href="logout.php">Logout</a></p>
 
     <script>
         function updateVenue() {
@@ -147,6 +147,11 @@ include 'config.php';
         });
     </script>
 
+    <script>
+        function confirmLogout() {
+            return confirm("Are you sure you want to log out?");
+        }
+    </script>
 </body>
 
 </html>

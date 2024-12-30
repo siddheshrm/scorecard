@@ -58,7 +58,7 @@ include 'config.php';
     ?>
 
     <p><a href="create_match.php">Add New Match</a> | <a href="admin_dashboard.php">Go To Dashboard</a></p>
-    <p><a href="index.php">Logout</a></p>
+    <p><a href="logout.php">Logout</a></p>
 
     <script>
         function updateMatch(matchNo, result) {
@@ -88,6 +88,11 @@ include 'config.php';
         });
     </script>
 
+    <script>
+        function confirmLogout() {
+            return confirm("Are you sure you want to log out?");
+        }
+    </script>
 </body>
 
 </html>

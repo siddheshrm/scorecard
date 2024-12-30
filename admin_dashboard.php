@@ -38,7 +38,13 @@ if ($result->num_rows > 0) {
     <p><a href="register.php">Register New Admin</p>
     <p><a href="create_match.php">Add New Match</a> | <a href="view_matches.php">See All Matches</a>
     </p>
-    <p><a href="logout.php">Logout</a></p>
+    <p><a href="logout.php" onclick="return confirmLogout()">Logout</a></p>
+
+    <script>
+        function confirmLogout() {
+            return confirm("Are you sure you want to log out?");
+        }
+    </script>
 </body>
 
 </html>
