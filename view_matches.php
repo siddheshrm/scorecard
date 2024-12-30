@@ -29,7 +29,7 @@ include 'config.php';
     if ($result->num_rows > 0) {
         // Output table header
         echo "<table>";
-        echo "<tr><th>Match No.</th><th>Date</th><th>Home</th><th>Away</th><th>Venue</th><th>Toss</th><th>Decision</th><th>Result</th><th>Actions</th></tr>";
+        echo "<tr><th>Match No.</th><th>Date</th><th>Home</th><th>Away</th><th>Venue</th><th>Toss And Decision</th><th>Result</th><th>Actions</th></tr>";
 
         // Output data of each row
         $row_number = $result->num_rows; // Set initial row number to the number of rows in the result set
@@ -41,8 +41,7 @@ include 'config.php';
             echo "<td>" . $row['home_team'] . "</td>";
             echo "<td>" . $row['away_team'] . "</td>";
             echo "<td>" . $row['venue'] . "</td>";
-            echo "<td>" . $row['toss'] . "</td>";
-            echo "<td>" . $row['decision'] . "</td>";
+            echo "<td>" . $row['toss'] . " won the toss and decided to " . $row['decision'] . " first</td>";
             echo "<td>" . $row['result'] . "</td>";
             echo "<td class='action-buttons'>";
             // Enable update button regardless of result value
