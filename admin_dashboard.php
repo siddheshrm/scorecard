@@ -42,7 +42,7 @@ if ($result->num_rows > 0) {
     <p><a href="register.php">Register New Admin</p>
     <p><a href="create_match.php">Insert New Match Data</a> | <a href="view_matches.php">Update Existing Match Data</a>
     </p>
-    <p><a href="index.php">Logout</a></p>
+    <p><a href="logout.php">Logout</a></p>
 </body>
 
 </html>
