@@ -4,13 +4,10 @@ body {
   background-color: #f4f4f4;
   margin: 0;
   padding: 0;
-}
-
-.container {
-  max-width: 900px;
-  margin: auto;
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
   overflow: hidden;
-  padding: 0 20px;
 }
 
 h2 {
@@ -23,6 +20,7 @@ table {
   width: 100%;
   border-collapse: collapse;
   margin-top: 20px;
+  margin-bottom: auto;
 }
 
 table th,
@@ -30,6 +28,7 @@ table td {
   border: 1px solid #ddd;
   padding: 8px;
   text-align: left;
+  font-size: 0.85rem;
 }
 
 table th {
@@ -52,7 +51,7 @@ table td {
   cursor: pointer;
   border: none;
   border-radius: 4px;
-  font-size: 16px;
+  font-size: 0.8rem;
 }
 
 .update-btn {
@@ -84,4 +83,31 @@ a {
 
 a:hover {
   color: #0056b3;
+}
+
+.pagination {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  margin-top: 20px;
+}
+
+.pagination a {
+  padding: 8px 12px;
+  text-decoration: none;
+  color: #000;
+  background-color: #ffe985;
+  border-radius: 5px;
+  transition: background-color 0.3s;
+  font-size: 0.85rem;
+}
+
+.pagination a:hover {
+  background-color: #ffd61f;
+}
+
+.pagination a.active {
+  background-color: #ffdd47;
+  font-weight: bold;
+  pointer-events: none;
 }
