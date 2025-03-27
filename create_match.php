@@ -54,8 +54,9 @@ include 'config.php';
         </select><br>
 
         <label for="venue">Venue:</label>
-        <input type="text" id="venue" name="venue" readonly>
-        <br>
+        <select id="venue" name="venue" required>
+            <option value="">Select Venue</option>
+        </select><br>
 
         <label for="toss_won_by">Toss Won By:</label>
         <select id="toss_won_by" name="toss_won_by" required>
@@ -88,24 +89,32 @@ include 'config.php';
             }
 
             var venueOptions = {
-                "MI": "Wankhede Stadium",
-                "CSK": "MA Chidambaram Stadium",
-                "RCB": "M Chinnaswamy Stadium",
-                "RR": "Sawai Mansingh Stadium",
-                "SRH": "Rajiv Gandhi International Cricket Stadium",
-                "KKR": "Eden Gardens",
-                "DC": "Arun Jaitley Stadium",
-                "PKS": "Punjab Cricket Association Stadium",
-                "GG": "Narendra Modi Stadium",
-                "LSG": "Bharat Ratna Shri Atal Bihari Vajpayee Ekana Cricket Stadium"
+                "MI": ["Wankhede Stadium, Mumbai"],
+                "CSK": ["MA Chidambaram Stadium, Chennai"],
+                "RCB": ["M. Chinnaswamy Stadium, Bengaluru"],
+                "RR": ["Sawai Mansingh Stadium, Jaipur", "Barsapara Cricket Stadium, Guwahati"],
+                "SRH": ["Rajiv Gandhi International Cricket Stadium, Hyderabad"],
+                "KKR": ["Eden Gardens, Kolkata"],
+                "DC": ["Arun Jaitley Stadium, Delhi", "Dr. Y.S. Rajasekhara Reddy ACA-VDCA Cricket Stadium, Visakhapatnam"],
+                "PBKS": ["Maharaja Yadavindra Singh International Cricket Stadium, Chandigarh", "Himachal Pradesh Cricket Association Stadium, Dharamsala"],
+                "GT": ["Narendra Modi Stadium, Ahmedabad"],
+                "LSG": ["Bharat Ratna Shri Atal Bihari Vajpayee Ekana Cricket Stadium, Lucknow"]
             };
 
             var venueDropdown = document.getElementById("venue");
-            venueDropdown.innerHTML = "";
-            venueDropdown.innerHTML += "<option value=''>Select Venue</option>";
-            if (venueOptions[team1] && venueOptions[team2]) {
-                venueDropdown.innerHTML += "<option value='" + venueOptions[team1] + "'>" + venueOptions[team1] + "</option>";
-                venueDropdown.value = venueOptions[team1]; // Auto-select venue based on home team
+            venueDropdown.innerHTML = "<option value=''>Select Venue</option>"; // Reset dropdown
+
+            if (venueOptions[team1]) {
+                venueOptions[team1].forEach(function (venue) {
+                    var option = document.createElement("option");
+                    option.value = venue;
+                    option.textContent = venue;
+                    venueDropdown.appendChild(option);
+                });
+
+                if (venueOptions[team1].length === 1) {
+                    venueDropdown.value = venueOptions[team1][0]; // Auto-select if only one venue
+                }
             }
         }
 
