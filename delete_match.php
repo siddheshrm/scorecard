@@ -54,8 +54,16 @@ if (isset($_GET['match_no']) && !empty($_GET['match_no'])) {
             $inning2_balls_nrr = $row['balls_played_away_nrr'];
         }
 
+        // Update matches_played only if the match was played
+        if ($inning1_runs > 0 || $inning2_runs > 0 || $inning1_overs_nrr > 0 || $inning2_overs_nrr > 0 || $inning1_balls_nrr > 0 || $inning2_balls_nrr > 0) {
+            $stmt_update_matches = $conn->prepare("UPDATE teams SET matches_played = matches_played - 1 WHERE short_name = ? OR short_name = ?");
+            $stmt_update_matches->bind_param("ss", $home_team, $away_team);
+            $stmt_update_matches->execute();
+            $stmt_update_matches->close();
+        }
+
         // Update statistics for both teams based on Home and Away team
-        $stmt_update_stats = $conn->prepare("UPDATE teams SET runs_scored = runs_scored - ?, overs_played = overs_played - ?, balls_played = balls_played - ?, runs_conceded = runs_conceded - ?, overs_bowled = overs_bowled - ?, balls_bowled = balls_bowled - ?, matches_played = matches_played - 1 WHERE short_name = ?");
+        $stmt_update_stats = $conn->prepare("UPDATE teams SET runs_scored = runs_scored - ?, overs_played = overs_played - ?, balls_played = balls_played - ?, runs_conceded = runs_conceded - ?, overs_bowled = overs_bowled - ?, balls_bowled = balls_bowled - ? WHERE short_name = ?");
 
         // Update the team that batted first
         $stmt_update_stats->bind_param("iiiiiis", $inning1_runs, $inning1_overs_nrr, $inning1_balls_nrr, $inning2_runs, $inning2_overs_nrr, $inning2_balls_nrr, $batting_first_team);
