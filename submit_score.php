@@ -60,10 +60,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             }
         }
 
-        // Calculate NRR for both teams
-        $overs_played_inning1 = $inning1_overs_nrr + ($inning1_balls_nrr / 6);
-        $overs_played_inning2 = $inning2_overs_nrr + ($inning2_balls_nrr / 6);
-
         // Fetch match details to get the teams
         $stmt = $conn->prepare("SELECT home_team, away_team, toss, decision FROM tournament_data WHERE match_no = ?");
         $stmt->bind_param("i", $match_no);
@@ -77,11 +73,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $toss_short = $row['toss'];
             $decision = $row['decision'];
 
-            // Determine the batting team for inning 1
+            // Determine the batting team for inning 1 based on the toss winner's decision
+            // Winner decided to bowl
             if ($decision === 'bowl') {
+                // If the home team wins the toss, the away team bats first
                 $batting_team_short = ($toss_short === $home_team_short) ? $away_team_short : $home_team_short;
                 $bowling_team_short = $toss_short;
             } else {
+                // If the home team wins the toss and decision is not 'bowl', the home team bats first
                 $batting_team_short = $toss_short;
                 $bowling_team_short = ($toss_short === $home_team_short) ? $away_team_short : $home_team_short;
             }
@@ -98,9 +97,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $stmt->execute();
             $bowling_team_result = $stmt->get_result();
             $bowling_team = $bowling_team_result->fetch_assoc()['team_name'];
-
-            // Calculate positive NRR
-            $nrr = abs(($inning1_runs / $overs_played_inning1) - ($inning2_runs / $overs_played_inning2));
 
             // Determine winning and losing teams
             if ($inning1_runs > $inning2_runs) {
@@ -129,6 +125,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $stmt->execute();
                 $result = $stmt->get_result();
                 if ($result->num_rows > 0) {
+                    // Winning team short_name
                     $winning_team_short = $result->fetch_assoc()['short_name'];
                 } else {
                     echo "No short name found for winning team<br>";
@@ -143,6 +140,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $stmt->execute();
                 $result = $stmt->get_result();
                 if ($result->num_rows > 0) {
+                    // Losing team short_name
                     $losing_team_short = $result->fetch_assoc()['short_name'];
                 } else {
                     echo "No short name found for losing team<br>";
@@ -151,33 +149,92 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             }
 
             // Prepare update statement for tournament_data
-            $stmt = $conn->prepare("UPDATE tournament_data SET result = ?, winning_team = ?, losing_team = ?, runs_scored_home = ?, runs_scored_away = ?, overs_played_home = ?, overs_played_away = ?, balls_played_home = ?, balls_played_away = ?, wickets_lost_home = ?, wickets_lost_away = ?, overs_played_home_nrr = ?, balls_played_home_nrr = ?, overs_played_away_nrr = ?, balls_played_away_nrr = ?, nrr = ? WHERE match_no = ?");
+            $stmt = $conn->prepare("UPDATE tournament_data SET result = ?, winning_team = ?, losing_team = ?, runs_scored_home = ?, runs_scored_away = ?, overs_played_home = ?, overs_played_away = ?, balls_played_home = ?, balls_played_away = ?, wickets_lost_home = ?, wickets_lost_away = ?, overs_played_home_nrr = ?, balls_played_home_nrr = ?, overs_played_away_nrr = ?, balls_played_away_nrr = ? WHERE match_no = ?");
 
             if ($batting_team_short == $home_team_short) {
-                $stmt->bind_param("sssiiiiiiiiiiiidi", $resultMessage, $winning_team, $losing_team, $inning1_runs, $inning2_runs, $inning1_overs, $inning2_overs, $inning1_balls, $inning2_balls, $inning1_wickets, $inning2_wickets, $inning1_overs_nrr, $inning1_balls_nrr, $inning2_overs_nrr, $inning2_balls_nrr, $nrr, $match_no);
+                $stmt->bind_param("sssiiiiiiiiiiiii", $resultMessage, $winning_team, $losing_team, $inning1_runs, $inning2_runs, $inning1_overs, $inning2_overs, $inning1_balls, $inning2_balls, $inning1_wickets, $inning2_wickets, $inning1_overs_nrr, $inning1_balls_nrr, $inning2_overs_nrr, $inning2_balls_nrr, $match_no);
             } else {
-                $stmt->bind_param("sssiiiiiiiiiiiidi", $resultMessage, $winning_team, $losing_team, $inning2_runs, $inning1_runs, $inning2_overs, $inning1_overs, $inning2_balls, $inning1_balls, $inning2_wickets, $inning1_wickets, $inning2_overs_nrr, $inning2_balls_nrr, $inning1_overs_nrr, $inning1_balls_nrr, $nrr, $match_no);
+                $stmt->bind_param("sssiiiiiiiiiiiii", $resultMessage, $winning_team, $losing_team, $inning2_runs, $inning1_runs, $inning2_overs, $inning1_overs, $inning2_balls, $inning1_balls, $inning2_wickets, $inning1_wickets, $inning2_overs_nrr, $inning2_balls_nrr, $inning1_overs_nrr, $inning1_balls_nrr, $match_no);
             }
 
             if ($stmt->execute()) {
                 if ($winning_team !== NULL && $losing_team !== NULL) {
-                    // Update wins, points, matches_played, and NRR for the winning team
-                    $stmt_update_wins = $conn->prepare("UPDATE teams SET matches_played = matches_played + 1, wins = wins + 1, points = points + 2, nrr = nrr + ? WHERE short_name = ?");
-                    $stmt_update_wins->bind_param("ds", $nrr, $winning_team_short);
+                    // Update wins, points, matches_played for the winning team
+                    $stmt_update_wins = $conn->prepare("UPDATE teams SET matches_played = matches_played + 1, wins = wins + 1, points = points + 2 WHERE short_name = ?");
+                    $stmt_update_wins->bind_param("s", $winning_team_short);
                     $stmt_update_wins->execute();
                     $stmt_update_wins->close();
 
-                    // Update losses, matches_played, and NRR for the losing team
-                    $stmt_update_losses = $conn->prepare("UPDATE teams SET matches_played = matches_played + 1, losses = losses + 1, nrr = nrr - ? WHERE short_name = ?");
-                    $stmt_update_losses->bind_param("ds", $nrr, $losing_team_short);
+                    // Update matches_played, losses for the losing team
+                    $stmt_update_losses = $conn->prepare("UPDATE teams SET matches_played = matches_played + 1, losses = losses + 1 WHERE short_name = ?");
+                    $stmt_update_losses->bind_param("s", $losing_team_short);
                     $stmt_update_losses->execute();
                     $stmt_update_losses->close();
+
+                    // Update batting and bowling stats for NRR calcultaion of the winning team
+                    $stmt_update_winning_stats = $conn->prepare("UPDATE teams SET runs_scored = runs_scored + ?, overs_played = overs_played + ?, balls_played = balls_played + ?, runs_conceded = runs_conceded + ?, overs_bowled = overs_bowled + ?, balls_bowled = balls_bowled + ? WHERE short_name = ?");
+
+                    if ($winning_team_short == $batting_team_short) {
+                        $stmt_update_winning_stats->bind_param("iiiiiis", $inning1_runs, $inning1_overs_nrr, $inning1_balls_nrr, $inning2_runs, $inning2_overs_nrr, $inning2_balls_nrr, $winning_team_short);
+                        $stmt_update_winning_stats->execute();
+                    } else {
+                        $stmt_update_winning_stats->bind_param("iiiiiis", $inning2_runs, $inning2_overs_nrr, $inning2_balls_nrr, $inning1_runs, $inning1_overs_nrr, $inning1_balls_nrr, $winning_team_short);
+                        $stmt_update_winning_stats->execute();
+                    }
+                    $stmt_update_winning_stats->close();
+
+                    // Update batting and bowling stats for NRR calcultaion of the losing team
+                    $stmt_update_losing_stats = $conn->prepare("UPDATE teams SET runs_scored = runs_scored + ?, overs_played = overs_played + ?, balls_played = balls_played + ?, runs_conceded = runs_conceded + ?, overs_bowled = overs_bowled + ?, balls_bowled = balls_bowled + ? WHERE short_name = ?");
+
+                    if ($losing_team_short == $batting_team_short) {
+                        $stmt_update_losing_stats->bind_param("iiiiiis", $inning1_runs, $inning1_overs_nrr, $inning1_balls_nrr, $inning2_runs, $inning2_overs_nrr, $inning2_balls_nrr, $losing_team_short);
+                        $stmt_update_losing_stats->execute();
+                    } else {
+                        $stmt_update_losing_stats->bind_param("iiiiiis", $inning2_runs, $inning2_overs_nrr, $inning2_balls_nrr, $inning1_runs, $inning1_overs_nrr, $inning1_balls_nrr, $losing_team_short);
+                        $stmt_update_losing_stats->execute();
+                    }
+                    $stmt_update_losing_stats->close();
+
+                    // Update Net Run Rate for each team
+                    $stmt_update_nrr = $conn->prepare("UPDATE teams SET nrr = (runs_scored / (overs_played + (balls_played / 6.0))) - (runs_conceded / (overs_bowled + (balls_bowled / 6.0))) WHERE overs_played > 0 AND overs_bowled > 0");
+                    $stmt_update_nrr->execute();
+                    $stmt_update_nrr->close();
                 } elseif ($winning_team == NULL && $losing_team == NULL) {
-                    // Update matches_played and no_result for both teams
+                    // Update matches_played, no_result, and points for both teams
                     $stmt_update_tie = $conn->prepare("UPDATE teams SET matches_played = matches_played + 1, no_result = no_result + 1, points = points + 1 WHERE short_name = ? OR short_name = ?");
                     $stmt_update_tie->bind_param("ss", $home_team_short, $away_team_short);
                     $stmt_update_tie->execute();
                     $stmt_update_tie->close();
+
+                    // Update batting and bowling stats for both teams
+                    $stmt_update_tie_stats = $conn->prepare("UPDATE teams SET runs_scored = runs_scored + ?, overs_played = overs_played + ?, balls_played = balls_played + ?, runs_conceded = runs_conceded + ?, overs_bowled = overs_bowled + ?, balls_bowled = balls_bowled + ? WHERE short_name = ?");
+
+                    // Home team bats first
+                    if ($home_team_short == $batting_team_short) {
+                        // Update stats for home team
+                        $stmt_update_tie_stats->bind_param("iiiiiis", $inning1_runs, $inning1_overs_nrr, $inning1_balls_nrr, $inning2_runs, $inning2_overs_nrr, $inning2_balls_nrr, $home_team_short);
+                        $stmt_update_tie_stats->execute();
+
+                        // Update stats for away team
+                        $stmt_update_tie_stats->bind_param("iiiiiis", $inning2_runs, $inning2_overs_nrr, $inning2_balls_nrr, $inning1_runs, $inning1_overs_nrr, $inning1_balls_nrr, $away_team_short);
+                        $stmt_update_tie_stats->execute();
+                    } else {
+                        // Away team bats first
+                        // Update stats for home team
+                        $stmt_update_tie_stats->bind_param("iiiiiis", $inning1_runs, $inning1_overs_nrr, $inning1_balls_nrr, $inning2_runs, $inning2_overs_nrr, $inning2_balls_nrr, $away_team_short);
+                        $stmt_update_tie_stats->execute();
+
+                        // Update stats for away team
+                        $stmt_update_tie_stats->bind_param("iiiiiis", $inning2_runs, $inning2_overs_nrr, $inning2_balls_nrr, $inning1_runs, $inning1_overs_nrr, $inning1_balls_nrr, $home_team_short);
+                        $stmt_update_tie_stats->execute();
+                    }
+                    $stmt_update_tie_stats->close();
+
+                    // Update NRR for both teams
+                    $stmt_update_nrr = $conn->prepare("UPDATE teams SET nrr = (runs_scored / (overs_played + (balls_played / 6.0))) -(runs_conceded / (overs_bowled + (balls_bowled / 6.0))) WHERE short_name = ? OR short_name = ?");
+                    $stmt_update_nrr->bind_param("ss", $home_team_short, $away_team_short);
+                    $stmt_update_nrr->execute();
+                    $stmt_update_nrr->close();
                 }
 
                 // Output JavaScript for alert and redirect
