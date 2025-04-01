@@ -30,10 +30,11 @@ table td {
   padding: 12px;
   text-align: center;
   border-bottom: 1px solid #ddd;
+  font-weight: 600;
 }
 
 table th {
-  background-color: #007bff;
+  background-color: #223577;
   color: #fff;
 }
 
@@ -54,7 +55,10 @@ a:hover {
   color: #0056b3;
 }
 
-.top-team {
-  background-color: #b3efc1;
-  color: #165d27;
+.team-info img {
+  object-fit: cover;
 }
+
+/* .top-team {
+  background-color: #d4f5d6;
+} */

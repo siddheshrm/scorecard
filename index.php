@@ -18,7 +18,7 @@ session_start();
 </head>
 
 <body>
-    <h2>Welcome to <i>scorecard.com</i></h2>
+    <!-- <h2>Welcome to <i>scorecard.com</i></h2> -->
     <?php include 'points_table.php'; ?>
     <p>
         <a href="admin_login.php">Admin Login</a>

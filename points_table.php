@@ -4,13 +4,18 @@ if (!isset($conn)) {
 }
 
 // Query to fetch points table data
-$query = "SELECT team_name, 
+$query = "SELECT team_name,
+                 logo,
                  SUM(wins + losses + no_result) AS matches_played,
                  wins AS wins, 
                  losses AS losses, 
                  no_result AS no_result, 
                  points AS points,
-                 nrr AS nrr
+                 nrr AS nrr,
+                 runs_scored as runs_scored,
+                 runs_conceded as runs_conceded,
+                 (overs_played + (balls_played DIV 6)) + (MOD(balls_played, 6) / 10) AS overs_played,
+                 (overs_bowled + (balls_bowled DIV 6)) + (MOD(balls_bowled, 6) / 10) AS overs_bowled
           FROM teams
           GROUP BY team_name
           ORDER BY points DESC, nrr DESC, wins DESC";
@@ -25,31 +30,38 @@ if ($result->num_rows > 0) {
 }
 ?>
 
-<h3>IPL 2024 Points Table</h3>
+<h2>Indian Premier League 2025</h2>
 <table>
     <tr>
-        <th>Position</th>
+        <th>#</th>
+        <th></th>
         <th>Team</th>
-        <th>Matches Played</th>
-        <th>Wins</th>
-        <th>Losses</th>
-        <th>Tie/No Result</th>
-        <th>Points</th>
+        <th>Matches</th>
+        <th>Won</th>
+        <th>Lost</th>
+        <th>Tied/NR</th>
+        <th>For</th>
+        <th>Against</th>
         <th>NRR</th>
+        <th>Points</th>
     </tr>
     <?php
     $position = 1;
+
     foreach ($points_table as $team) {
         $row_class = $position <= 4 ? 'top-team' : '';
         echo "<tr class='$row_class'>";
         echo "<td>" . $position . "</td>";
+        echo "<td class='team-info'><img src='" . $team['logo'] . "' width='45' height='45' alt='" . $team['team_name'] . "'></td>";
         echo "<td>" . $team['team_name'] . "</td>";
         echo "<td>" . $team['matches_played'] . "</td>";
         echo "<td>" . $team['wins'] . "</td>";
         echo "<td>" . $team['losses'] . "</td>";
         echo "<td>" . $team['no_result'] . "</td>";
-        echo "<td>" . $team['points'] . "</td>";
+        echo "<td>" . $team['runs_scored'] . "/" . number_format($team['overs_played'], 1) . "</td>";
+        echo "<td>" . $team['runs_conceded'] . "/" . number_format($team['overs_bowled'], 1) . "</td>";
         echo "<td>" . $team['nrr'] . "</td>";
+        echo "<td>" . $team['points'] . "</td>";
         echo "</tr>";
         $position++;
     }
