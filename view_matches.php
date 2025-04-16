@@ -98,8 +98,10 @@ $total_pages = ceil($total_records_fetched / $limit); // Total pages required
         function updateMatch(matchNo, result) {
             // Check if result is not empty
             if (result !== "") {
-                // Redirect to edit_match.php if result is not empty
-                window.location.href = "edit_match.php?match_no=" + matchNo;
+                // Temporarily disabled: redirect to edit_match.php
+                alert("Match editing is temporarily disabled. Please delete and re-add the match to make changes.");
+
+                // window.location.href = "edit_match.php?match_no=" + matchNo;
             } else {
                 // Redirect to update_match.php if result is empty
                 window.location.href = "update_match.php?match_no=" + matchNo;
