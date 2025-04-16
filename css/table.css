@@ -55,8 +55,17 @@ a:hover {
   color: #0056b3;
 }
 
+.team-info {
+  text-align: left;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
 .team-info img {
   object-fit: cover;
+  width: 45px;
+  height: 45px;
 }
 
 /* .top-team {

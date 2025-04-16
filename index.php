@@ -15,6 +15,7 @@ session_start();
     <link rel="icon" href="./media/scorecard.com.png" type="image/png">
     <link rel="stylesheet" href="css/style.css">
     <link rel="stylesheet" href="css/table.css">
+    <link rel="stylesheet" href="css/match_details.css">
 </head>
 
 <body>
@@ -36,6 +37,53 @@ session_start();
         unset($_SESSION['message']);
     }
     ?>
+
+    <!-- Modal is inserted dynamically here -->
+    <div id="modal-container"></div>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            document.querySelectorAll(".dropdown-icon").forEach(icon => {
+                icon.addEventListener("click", function () {
+                    let team = this.getAttribute("data-team");
+
+                    // Fetch modal content from match_details.php
+                    fetch("match_details.php?team=" + team)
+                        .then(response => response.text())
+                        .then(data => {
+                            let modalContainer = document.getElementById("modal-container");
+                            modalContainer.innerHTML = data;
+
+                            // Find the modal element inside newly inserted content
+                            let modal = document.getElementById("matchModal");
+                            if (!modal) {
+                                console.error("Modal element not found.");
+                                return;
+                            }
+
+                            modal.style.display = "flex"; // Show modal
+
+                            // Attach close event after modal is added
+                            let closeBtn = modal.querySelector(".close");
+                            if (closeBtn) {
+                                closeBtn.addEventListener("click", closeModal);
+                            }
+                        })
+                        .catch(error => console.error("Error loading modal:", error));
+                });
+            });
+        });
+
+        // Function to close the modal
+        function closeModal() {
+            const modal = document.getElementById("matchModal");
+            if (modal) {
+                modal.remove();
+            }
+        }
+    </script>
+
+    <script src="https://kit.fontawesome.com/9dd0cb4077.js" crossorigin="anonymous"></script>
 </body>
 
 </html>

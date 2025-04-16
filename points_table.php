@@ -34,7 +34,6 @@ if ($result->num_rows > 0) {
 <table>
     <tr>
         <th>#</th>
-        <th></th>
         <th>Team</th>
         <th>Matches</th>
         <th>Won</th>
@@ -44,6 +43,7 @@ if ($result->num_rows > 0) {
         <th>Against</th>
         <th>NRR</th>
         <th>Points</th>
+        <th></th>
     </tr>
     <?php
     $position = 1;
@@ -52,8 +52,7 @@ if ($result->num_rows > 0) {
         $row_class = $position <= 4 ? 'top-team' : '';
         echo "<tr class='$row_class'>";
         echo "<td>" . $position . "</td>";
-        echo "<td class='team-info'><img src='" . $team['logo'] . "' width='45' height='45' alt='" . $team['team_name'] . "'></td>";
-        echo "<td>" . $team['team_name'] . "</td>";
+        echo "<td class='team-info'><img src='" . $team['logo'] . "' alt='" . $team['team_name'] . "'>" . $team['team_name'] . "</td>";
         echo "<td>" . $team['matches_played'] . "</td>";
         echo "<td>" . $team['wins'] . "</td>";
         echo "<td>" . $team['losses'] . "</td>";
@@ -62,6 +61,8 @@ if ($result->num_rows > 0) {
         echo "<td>" . $team['runs_conceded'] . "/" . number_format($team['overs_bowled'], 1) . "</td>";
         echo "<td>" . $team['nrr'] . "</td>";
         echo "<td>" . $team['points'] . "</td>";
+        // Embed team_name dynamically into the data-team attribute for JS access
+        echo "<td><i class='fa-solid fa-caret-down dropdown-icon' data-team='" . $team['team_name'] . "'></i></td>";
         echo "</tr>";
         $position++;
     }
