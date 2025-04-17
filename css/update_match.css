@@ -51,7 +51,8 @@ h2 {
   margin-bottom: 10px;
 }
 
-.innings input[type="number"] {
+.innings input[type="number"],
+#match_status {
   font-family: "Open Sans", sans-serif;
   width: 100%;
   max-width: 1000px;

@@ -61,7 +61,7 @@ $total_pages = ceil($total_records_fetched / $limit); // Total pages required
             echo "<td>" . $row['home_team'] . "</td>";
             echo "<td>" . $row['away_team'] . "</td>";
             echo "<td>" . $row['venue'] . "</td>";
-            echo "<td>" . $row['toss'] . " won the toss and decided to " . $row['decision'] . " first</td>";
+            echo "<td>" . $row['toss'] . " decided to " . $row['decision'] . " first</td>";
             echo "<td>" . $row['result'] . "</td>";
             echo "<td class='action-buttons'>";
             // Enable update button regardless of result value

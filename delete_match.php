@@ -54,14 +54,6 @@ if (isset($_GET['match_no']) && !empty($_GET['match_no'])) {
             $inning2_balls_nrr = $row['balls_played_away_nrr'];
         }
 
-        // Update matches_played only if the match was played
-        if ($inning1_runs > 0 || $inning2_runs > 0 || $inning1_overs_nrr > 0 || $inning2_overs_nrr > 0 || $inning1_balls_nrr > 0 || $inning2_balls_nrr > 0) {
-            $stmt_update_matches = $conn->prepare("UPDATE teams SET matches_played = matches_played - 1 WHERE short_name = ? OR short_name = ?");
-            $stmt_update_matches->bind_param("ss", $home_team, $away_team);
-            $stmt_update_matches->execute();
-            $stmt_update_matches->close();
-        }
-
         // Update statistics for both teams based on Home and Away team
         $stmt_update_stats = $conn->prepare("UPDATE teams SET runs_scored = runs_scored - ?, overs_played = overs_played - ?, balls_played = balls_played - ?, runs_conceded = runs_conceded - ?, overs_bowled = overs_bowled - ?, balls_bowled = balls_bowled - ? WHERE short_name = ?");
 
@@ -97,19 +89,19 @@ if (isset($_GET['match_no']) && !empty($_GET['match_no'])) {
         // Adjust win/loss/tie records based on match result
         if ($result !== NULL) {
             if ($winning_team !== NULL && $losing_team !== NULL) {
-                // Update wins and points for the winning team
-                $update_winning_team = "UPDATE teams SET wins = wins - 1, points = points - 2 WHERE short_name = '$winning_team_short'";
+                // Update matches_played, wins and points for the winning team
+                $update_winning_team = "UPDATE teams SET matches_played = matches_played - 1, wins = wins - 1, points = points - 2 WHERE short_name = '$winning_team_short'";
                 $conn->query($update_winning_team);
 
-                // Update losses for the losing team
-                $update_losing_team = "UPDATE teams SET losses = losses - 1 WHERE short_name = '$losing_team_short'";
+                // Update matches_played, losses for the losing team
+                $update_losing_team = "UPDATE teams SET matches_played = matches_played - 1, losses = losses - 1 WHERE short_name = '$losing_team_short'";
                 $conn->query($update_losing_team);
             } elseif ($winning_team == NULL && $losing_team == NULL) {
-                // Update no_result and points for tied teams
-                $update_tied_team_one = "UPDATE teams SET no_result = no_result - 1, points = points - 1 WHERE short_name = '$home_team'";
+                // Update matches_played, no_result and points for both teams involved in the abandoned match
+                $update_tied_team_one = "UPDATE teams SET matches_played = matches_played - 1, no_result = no_result - 1, points = points - 1 WHERE short_name = '$home_team'";
                 $conn->query($update_tied_team_one);
 
-                $update_tied_team_two = "UPDATE teams SET no_result = no_result - 1, points = points - 1 WHERE short_name = '$away_team'";
+                $update_tied_team_two = "UPDATE teams SET matches_played = matches_played - 1, no_result = no_result - 1, points = points - 1 WHERE short_name = '$away_team'";
                 $conn->query($update_tied_team_two);
             }
         }

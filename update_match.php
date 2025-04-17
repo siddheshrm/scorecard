@@ -148,10 +148,20 @@ include 'config.php';
 
             // Display innings details with input fields
             echo "<div class='innings'>";
+
+            echo "<label for='match_status'>Match Status</label>";
+            echo "<select name='match_status' id='match_status' required onchange='toggleMatchStatus(this.value)'>";
+            echo "<option value='completed'>Completed</option>";
+            echo "<option value='abandoned'>No Result (Abandoned Due To Rain, Cancelled, etc.)</option>";
+            echo "</select>";
+
+            // Hidden flag field
+            echo "<input type='hidden' name='isCompleted' id='isCompleted' value='true'>";
+
             echo "<h3>Innings Details</h3>";
 
             echo "<p>Inning 1: $batting_team</p>";
-            echo "<form action='submit_score.php' method='post'>";
+            echo "<form id='matchForm' action='submit_score.php' method='post'>";
             echo "<input type='hidden' name='match_no' value='$match_no'>";
             echo "<label for='inning1_runs'>Runs Scored:</label>";
             echo "<input type='number' id='inning1_runs' name='inning1_runs' required>";
@@ -194,6 +204,24 @@ include 'config.php';
     <script>
         function confirmLogout() {
             return confirm("Are you sure you want to log out?");
+        }
+    </script>
+
+    <script>
+        function toggleMatchStatus(value) {
+            const form = document.getElementById('matchForm');
+            const isCompletedField = document.getElementById('isCompleted');
+            const scoreInputs = document.querySelectorAll("input[type='number']");
+
+            if (value === 'abandoned') {
+                isCompletedField.value = 'false';
+                form.action = 'handle_abandoned_match.php';
+                scoreInputs.forEach(input => input.disabled = true);
+            } else {
+                isCompletedField.value = 'true';
+                form.action = 'submit_score.php';
+                scoreInputs.forEach(input => input.disabled = false);
+            }
         }
     </script>
 </body>
