@@ -182,6 +182,14 @@ include 'config.php';
             echo "<label for='inning2_balls'>Balls Played:</label>";
             echo "<input type='number' id='inning2_balls' name='inning2_balls' min='0' max='5' required>";
 
+            echo "<div id='superOverSection' style='display:none; margin-top: 10px;'>";
+            echo "<p>Match is tied. Please select Super Over winner.</p>";
+            echo "<div style='display: flex; gap: 100px;'>";
+            echo "<label><input type='radio' name='super_over_winner' value='$batting_team'> $batting_team</label>";
+            echo "<label><input type='radio' name='super_over_winner' value='$bowling_team'> $bowling_team</label>";
+            echo "</div>";
+            echo "</div>";
+
             echo "<br>";
             echo "<input type='submit' value='Submit Score'>";
             echo "</form>";
@@ -223,6 +231,48 @@ include 'config.php';
                 scoreInputs.forEach(input => input.disabled = false);
             }
         }
+    </script>
+
+    <script>
+        function checkForTieAndShowSuperOver() {
+            // Get inning-wise runs from input fields
+            const inning1_runs = parseInt(document.getElementById('inning1_runs').value) || 0;
+            const inning2_runs = parseInt(document.getElementById('inning2_runs').value) || 0;
+            const superOverSection = document.getElementById('superOverSection');
+
+            // Show super over options if tied and both runs are > 0
+            if (inning1_runs > 0 && inning2_runs > 0 && inning1_runs === inning2_runs) {
+                superOverSection.style.display = 'block';
+            } else {
+                superOverSection.style.display = 'none';
+            }
+        }
+
+        // Keep checking for tied match score on user inputs
+        document.getElementById('inning1_runs').addEventListener('input', checkForTieAndShowSuperOver);
+        document.getElementById('inning2_runs').addEventListener('input', checkForTieAndShowSuperOver);
+
+        // Validate form before submitting
+        document.getElementById('matchForm').addEventListener('submit', function (event) {
+            const inning1_runs = parseInt(document.getElementById('inning1_runs').value) || 0;
+            const inning2_runs = parseInt(document.getElementById('inning2_runs').value) || 0;
+
+            if (inning1_runs === inning2_runs) {
+                const radios = document.getElementsByName('super_over_winner');
+                let isSelected = false;
+                for (let radio of radios) {
+                    if (radio.checked) {
+                        isSelected = true;
+                        break;
+                    }
+                }
+
+                if (!isSelected) {
+                    alert("Please select a Super Over winner.");
+                    event.preventDefault(); // Stop form from submitting
+                }
+            }
+        });
     </script>
 </body>
 

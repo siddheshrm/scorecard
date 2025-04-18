@@ -33,6 +33,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $inning1_balls_nrr = 0;
         } else {
             if ($inning1_wickets == 10 || ($inning1_overs != 20 && $inning1_wickets != 10)) {
+                // Team retired early due to injury / situation. Full 20 overs assumed for NRR.
                 $inning1_overs_nrr = 20;
                 $inning1_balls_nrr = 0;
             } else {
@@ -48,10 +49,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             // Handle the case where all runs are scored via no balls and wides
             if ($inning2_overs == 0 && $inning2_balls == 0 && $inning2_runs > 0) {
                 // Assign a value representing minimum one ball faced to avoid 'division by zero error' while calculating NRR
-                echo "<script>alert('Team batting second won without facing any legal deliveries. Balls played are set to 1 for NRR calculation.');</script>";
+                echo "<script>alert('Team batting second won without facing a legal delivery. Minimum 1 ball assumed for NRR calculation.');</script>";
                 $inning2_overs_nrr = 0;
                 $inning2_balls_nrr = 1;
             } elseif ($inning2_wickets == 10 || ($inning2_runs < $inning1_runs && $inning2_wickets != 10)) {
+                // Team retired early due to injury / situation. Full 20 overs assumed for NRR.
                 $inning2_overs_nrr = 20;
                 $inning2_balls_nrr = 0;
             } else {
@@ -108,9 +110,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $winning_team = $bowling_team;
                 $losing_team = $batting_team;
             } else {
-                $resultMessage = "The match is tied";
-                $winning_team = NULL;
-                $losing_team = NULL;
+                // The match is tied
+                if (!empty($_POST['super_over_winner'])) {
+                    $super_over_winner = $_POST['super_over_winner'];
+                    $winning_team = $super_over_winner;
+                    $losing_team = ($super_over_winner === $batting_team) ? $bowling_team : $batting_team;
+                    $resultMessage = "Match tied. $super_over_winner won the match in Super Over.";
+                }
             }
 
             // Initialize short names
