@@ -235,13 +235,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         $stmt_update_tie_stats->execute();
                     }
                     $stmt_update_tie_stats->close();
-
-                    // Update NRR for both teams
-                    $stmt_update_nrr = $conn->prepare("UPDATE teams SET nrr = (runs_scored / (overs_played + (balls_played / 6.0))) -(runs_conceded / (overs_bowled + (balls_bowled / 6.0))) WHERE short_name = ? OR short_name = ?");
-                    $stmt_update_nrr->bind_param("ss", $home_team_short, $away_team_short);
-                    $stmt_update_nrr->execute();
-                    $stmt_update_nrr->close();
                 }
+
+                // Update NRR for both teams
+                $stmt_update_nrr = $conn->prepare("UPDATE teams SET nrr = (runs_scored / (overs_played + (balls_played / 6.0))) -(runs_conceded / (overs_bowled + (balls_bowled / 6.0))) WHERE short_name = ? OR short_name = ?");
+                $stmt_update_nrr->bind_param("ss", $home_team_short, $away_team_short);
+                $stmt_update_nrr->execute();
+                $stmt_update_nrr->close();
 
                 // Output JavaScript for alert and redirect
                 echo "<script>
