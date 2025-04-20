@@ -149,26 +149,35 @@ include 'config.php';
             // Display innings details with input fields
             echo "<div class='innings'>";
 
+            echo "<form id='matchForm' action='submit_score.php' method='post'>";
+            echo "<input type='hidden' name='match_no' value='$match_no'>";
+
             echo "<label for='match_status'>Match Status</label>";
             echo "<select name='match_status' id='match_status' required onchange='toggleMatchStatus(this.value)'>";
             echo "<option value='completed'>Completed</option>";
+            echo "<option value='reduced'>Reduced Overs (Shortened Match Due To Rain, etc.)</option>";
             echo "<option value='abandoned'>No Result (Abandoned Due To Rain, Cancelled, etc.)</option>";
             echo "</select>";
 
             // Hidden flag field
             echo "<input type='hidden' name='isCompleted' id='isCompleted' value='true'>";
 
+            // Reduced overs input (initially hidden)
+            echo "<div id='reducedOversInput' style='display:none; margin-top:10px;'>";
+            echo "<label for='reduced_match_overs'>Enter Total Overs Per Side (Reduced Match)</label>";
+            // As per ICC rules, both teams need to have batted for a minimum of 5 overs each to constitute a valid match in a T20 match
+            echo "<input type='number' name='reduced_match_overs' id='reduced_match_overs' placeholder='Enter overs between 5 and 19' min='5' max='19'>";
+            echo "</div>";
+
             echo "<h3>Innings Details</h3>";
 
             echo "<p>Inning 1: $batting_team</p>";
-            echo "<form id='matchForm' action='submit_score.php' method='post'>";
-            echo "<input type='hidden' name='match_no' value='$match_no'>";
             echo "<label for='inning1_runs'>Runs Scored:</label>";
             echo "<input type='number' id='inning1_runs' name='inning1_runs' required>";
             echo "<label for='inning1_wickets'>Wickets Lost:</label>";
             echo "<input type='number' id='inning1_wickets' name='inning1_wickets' min='0' max='10' required>";
             echo "<label for='inning1_overs'>Overs Played:</label>";
-            echo "<input type='number' id='inning1_overs' name='inning1_overs' min='0' max='20' required oninput='if (this.value == 20) { document.getElementById(\"inning1_balls\").value = 0; }'>";
+            echo "<input type='number' id='inning1_overs' name='inning1_overs' min='0' required>";
             echo "<label for='inning1_balls'>Balls Played:</label>";
             echo "<input type='number' id='inning1_balls' name='inning1_balls' min='0' max='5' required>";
 
@@ -178,7 +187,7 @@ include 'config.php';
             echo "<label for='inning2_wickets'>Wickets Lost:</label>";
             echo "<input type='number' id='inning2_wickets' name='inning2_wickets' min='0' max='10' required>";
             echo "<label for='inning2_overs'>Overs Played:</label>";
-            echo "<input type='number' id='inning2_overs' name='inning2_overs' min='0' max='20' required oninput='if (this.value == 20) { document.getElementById(\"inning2_balls\").value = 0; }'>";
+            echo "<input type='number' id='inning2_overs' name='inning2_overs' min='0' required>";
             echo "<label for='inning2_balls'>Balls Played:</label>";
             echo "<input type='number' id='inning2_balls' name='inning2_balls' min='0' max='5' required>";
 
@@ -219,16 +228,47 @@ include 'config.php';
         function toggleMatchStatus(value) {
             const form = document.getElementById('matchForm');
             const isCompletedField = document.getElementById('isCompleted');
-            const scoreInputs = document.querySelectorAll("input[type='number']");
+            const reducedInputDiv = document.getElementById('reducedOversInput');
+            const reducedInput = document.getElementById('reduced_match_overs');
+
+            // Exclude reduced_overs field from disabling
+            const scoreInputs = Array.from(document.querySelectorAll("input[type='number']")).filter(
+                input => input.id !== 'reduced_match_overs'
+            );
 
             if (value === 'abandoned') {
                 isCompletedField.value = 'false';
                 form.action = 'handle_abandoned_match.php';
                 scoreInputs.forEach(input => input.disabled = true);
+                reducedInputDiv.style.display = 'none';
+                reducedInput.required = false;
+                reducedInput.disabled = true;
+            } else if (value === 'reduced') {
+                isCompletedField.value = 'true';
+                form.action = 'submit_reduced_score.php';
+                scoreInputs.forEach(input => input.disabled = false);
+                reducedInputDiv.style.display = 'block';
+                reducedInput.required = true;
+                reducedInput.disabled = false;
             } else {
                 isCompletedField.value = 'true';
                 form.action = 'submit_score.php';
                 scoreInputs.forEach(input => input.disabled = false);
+                reducedInputDiv.style.display = 'none';
+                reducedInput.required = false;
+                reducedInput.disabled = true;
+            }
+
+            if (value === 'reduced') {
+                const oversInput = document.getElementById('reduced_match_overs');
+                oversInput.setCustomValidity('');
+                oversInput.addEventListener('input', function () {
+                    if (this.value < 5 || this.value > 19) {
+                        this.setCustomValidity('Overs must be between 5 and 19');
+                    } else {
+                        this.setCustomValidity('');
+                    }
+                });
             }
         }
     </script>
@@ -256,8 +296,12 @@ include 'config.php';
         document.getElementById('matchForm').addEventListener('submit', function (event) {
             const inning1_runs = parseInt(document.getElementById('inning1_runs').value) || 0;
             const inning2_runs = parseInt(document.getElementById('inning2_runs').value) || 0;
+            const matchStatus = document.getElementById('match_status').value;
 
-            if (inning1_runs === inning2_runs) {
+            const isTied = inning1_runs === inning2_runs && inning1_runs > 0;
+            const isValidStatus = matchStatus === 'completed' || matchStatus === 'reduced';
+
+            if (isTied && isValidStatus) {
                 const radios = document.getElementsByName('super_over_winner');
                 let isSelected = false;
                 for (let radio of radios) {
@@ -273,6 +317,41 @@ include 'config.php';
                 }
             }
         });
+    </script>
+
+    <script>
+        const reducedOversInput = document.getElementById('reduced_match_overs');
+        const inning1Overs = document.getElementById('inning1_overs');
+        const inning1Balls = document.getElementById('inning1_balls');
+        const inning2Overs = document.getElementById('inning2_overs');
+        const inning2Balls = document.getElementById('inning2_balls');
+
+        function handleOversValidation() {
+            const matchOvers = parseInt(reducedOversInput.value) || 20; // Default 20 if not reduced
+            inning1Overs.max = matchOvers;
+            inning2Overs.max = matchOvers;
+
+            // Inning-1
+            if (parseInt(inning1Overs.value) === matchOvers) {
+                inning1Balls.value = 0;
+                inning1Balls.readOnly = true;
+            } else {
+                inning1Balls.readOnly = false;
+            }
+
+            // Inning-2
+            if (parseInt(inning2Overs.value) === matchOvers) {
+                inning2Balls.value = 0;
+                inning2Balls.readOnly = true;
+            } else {
+                inning2Balls.readOnly = false;
+            }
+        }
+
+        // Attach listeners to validate when overs change
+        reducedOversInput.addEventListener('input', handleOversValidation);
+        inning1Overs.addEventListener('input', handleOversValidation);
+        inning2Overs.addEventListener('input', handleOversValidation);
     </script>
 </body>
 
