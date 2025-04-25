@@ -9,41 +9,43 @@ $redirectURL = "view_matches.php";
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     // Check if all necessary fields are set and not empty
     if (
-        isset($_POST['match_no']) && isset($_POST['inning1_runs']) && isset($_POST['inning1_wickets']) &&
+        isset($_POST['match_no']) && isset($_POST['match_status']) &&
+        isset($_POST['inning1_runs']) && isset($_POST['inning1_wickets']) &&
         isset($_POST['inning1_overs']) && isset($_POST['inning1_balls']) &&
         isset($_POST['inning2_runs']) && isset($_POST['inning2_wickets']) &&
         isset($_POST['inning2_overs']) && isset($_POST['inning2_balls'])
     ) {
         // Get form data
         $match_no = intval($_POST['match_no']);
+        $match_status = $_POST['match_status'];
 
+        // Inning-1
         $inning1_runs = intval($_POST['inning1_runs']);
         $inning1_wickets = intval($_POST['inning1_wickets']);
         $inning1_overs = intval($_POST['inning1_overs']);
         $inning1_balls = intval($_POST['inning1_balls']);
 
+        // Inning-2
         $inning2_runs = intval($_POST['inning2_runs']);
         $inning2_wickets = intval($_POST['inning2_wickets']);
         $inning2_overs = intval($_POST['inning2_overs']);
         $inning2_balls = intval($_POST['inning2_balls']);
 
-        // Calculate overs and balls for NRR based on wickets lost
-        if ($inning1_runs == 0) {
-            $inning1_overs_nrr = 20;
-            $inning1_balls_nrr = 0;
+        // Determine overs for this match
+        if ($match_status === "reduced" && isset($_POST['reduced_match_overs'])) {
+            $matchOvers = intval($_POST['reduced_match_overs']);
         } else {
-            if ($inning1_wickets == 10 || ($inning1_overs != 20 && $inning1_wickets != 10)) {
-                // Team retired early due to injury / situation. Full 20 overs assumed for NRR.
-                $inning1_overs_nrr = 20;
-                $inning1_balls_nrr = 0;
-            } else {
-                $inning1_overs_nrr = $inning1_overs;
-                $inning1_balls_nrr = $inning1_balls;
-            }
+            $matchOvers = 20; // Default for completed match
         }
 
+        // Calculate overs and balls for NRR based on wickets lost
+        // Inning-1
+        $inning1_overs_nrr = $matchOvers;
+        $inning1_balls_nrr = 0;
+
+        // Inning-2
         if ($inning2_runs == 0) {
-            $inning2_overs_nrr = 20;
+            $inning2_overs_nrr = $matchOvers;
             $inning2_balls_nrr = 0;
         } else {
             // Handle the case where all runs are scored via no balls and wides
@@ -53,8 +55,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $inning2_overs_nrr = 0;
                 $inning2_balls_nrr = 1;
             } elseif ($inning2_wickets == 10 || ($inning2_runs < $inning1_runs && $inning2_wickets != 10)) {
-                // Team retired early due to injury / situation. Full 20 overs assumed for NRR.
-                $inning2_overs_nrr = 20;
+                // Team all out or retired early due to an injury/situation. Full $matchOvers overs assumed for NRR.
+                $inning2_overs_nrr = $matchOvers;
                 $inning2_balls_nrr = 0;
             } else {
                 $inning2_overs_nrr = $inning2_overs;
@@ -100,13 +102,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $bowling_team_result = $stmt->get_result();
             $bowling_team = $bowling_team_result->fetch_assoc()['team_name'];
 
-            // Determine winning and losing teams
+            // Determine match type label
+            $matchLabel = ($match_status === "reduced") ? " ($matchOvers overs game - due to rain)" : "";
+
+            // Determine winning and losing teams and result message
             if ($inning1_runs > $inning2_runs) {
-                $resultMessage = "$batting_team won by " . ($inning1_runs - $inning2_runs) . " runs";
+                $resultMessage = "$batting_team won by " . ($inning1_runs - $inning2_runs) . " runs$matchLabel";
                 $winning_team = $batting_team;
                 $losing_team = $bowling_team;
             } elseif ($inning1_runs < $inning2_runs) {
-                $resultMessage = "$bowling_team won by " . (10 - $inning2_wickets) . " wickets";
+                $resultMessage = "$bowling_team won by " . (10 - $inning2_wickets) . " wickets$matchLabel";
                 $winning_team = $bowling_team;
                 $losing_team = $batting_team;
             } else {
@@ -115,7 +120,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     $super_over_winner = $_POST['super_over_winner'];
                     $winning_team = $super_over_winner;
                     $losing_team = ($super_over_winner === $batting_team) ? $bowling_team : $batting_team;
-                    $resultMessage = "Match tied. $super_over_winner won the match in Super Over.";
+                    $resultMessage = "Match tied$matchLabel. $super_over_winner won the match in Super Over.";
+                } else {
+                    $resultMessage = "Match tied$matchLabel.";
+                    $winning_team = "";
+                    $losing_team = "";
                 }
             }
 

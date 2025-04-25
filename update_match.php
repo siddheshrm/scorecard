@@ -245,7 +245,7 @@ include 'config.php';
                 reducedInput.disabled = true;
             } else if (value === 'reduced') {
                 isCompletedField.value = 'true';
-                form.action = 'submit_reduced_score.php';
+                form.action = 'submit_score.php';
                 scoreInputs.forEach(input => input.disabled = false);
                 reducedInputDiv.style.display = 'block';
                 reducedInput.required = true;
@@ -260,9 +260,8 @@ include 'config.php';
             }
 
             if (value === 'reduced') {
-                const oversInput = document.getElementById('reduced_match_overs');
-                oversInput.setCustomValidity('');
-                oversInput.addEventListener('input', function () {
+                reducedInput.setCustomValidity('');
+                reducedInput.addEventListener('input', function () {
                     if (this.value < 5 || this.value > 19) {
                         this.setCustomValidity('Overs must be between 5 and 19');
                     } else {
