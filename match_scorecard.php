@@ -10,10 +10,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $venue = $_POST['venue'];
     $toss_won_by = $_POST['toss_won_by'];
     $decided_to = $_POST['decided_to'];
+    $is_evening_match = $_POST['is_evening_match'];
 
     // Insert data into tournament_data table
-    $sql = "INSERT INTO tournament_data (date, home_team, away_team, venue, toss, decision) 
-            VALUES ('$date', '$home_team', '$away_team', '$venue', '$toss_won_by', '$decided_to')";
+    $sql = "INSERT INTO tournament_data (date, is_evening_match, home_team, away_team, venue, toss, decision) 
+            VALUES ('$date', $is_evening_match , '$home_team', '$away_team', '$venue', '$toss_won_by', '$decided_to')";
 
     if ($conn->query($sql) === TRUE) {
         // Redirect to view_matches.php after successful submission

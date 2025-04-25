@@ -23,6 +23,12 @@ include 'config.php';
         <label for="date">Date:</label>
         <input type="date" id="date" name="date" required max="<?php echo date('Y-m-d'); ?>"><br>
 
+        <label for="is_evening_match">Match Time:</label>
+        <select name="is_evening_match" required>
+            <option value="1" selected>7:30 PM</option>
+            <option value="0">3:30 PM</option>
+        </select>
+
         <label for="team1">Home Team:</label>
         <select id="team1" name="team1" onchange="updateVenue(); updateTossWonBy();" required>
             <option value="">Select Team</option>

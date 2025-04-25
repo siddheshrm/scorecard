@@ -8,7 +8,7 @@ $page = isset($_GET['page']) ? max((int) $_GET['page'], 1) : 1;
 $offset = ($page - 1) * $limit; // Offset calculation
 
 // Query to get paginated records
-$sql = "SELECT * FROM tournament_data ORDER BY date DESC LIMIT ? OFFSET ?";
+$sql = "SELECT * FROM tournament_data ORDER BY date DESC, is_evening_match DESC LIMIT ? OFFSET ?";
 $stmt = $conn->prepare($sql);
 $stmt->bind_param("ii", $limit, $offset);
 $stmt->execute();
@@ -32,8 +32,7 @@ $total_pages = ceil($total_records_fetched / $limit); // Total pages required
     <title>Tournament History</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,300..800;1,300..800&display=swap"
-        rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,300..800;1,300..800&display=swap" rel="stylesheet">
     <link rel="icon" href="./media/scorecard.com.png" type="image/png">
     <link rel="stylesheet" href="css/view_matches.css">
 </head>
@@ -45,7 +44,7 @@ $total_pages = ceil($total_records_fetched / $limit); // Total pages required
     if ($result->num_rows > 0) {
         // Output table header
         echo "<table>";
-        echo "<tr><th>Match No.</th><th>Date</th><th>Home</th><th>Away</th><th>Venue</th><th>Toss And Decision</th><th>Result</th><th>Actions</th></tr>";
+        echo "<tr><th>#</th><th>Date - Time</th><th>Home</th><th>Away</th><th>Venue</th><th>Toss And Decision</th><th>Result</th><th>Actions</th></tr>";
 
         // Calculate the starting match number for the current page
         $start_match_number = $total_records_fetched - $offset;
@@ -56,8 +55,9 @@ $total_pages = ceil($total_records_fetched / $limit); // Total pages required
         while ($row = $result->fetch_assoc()) {
             echo "<tr>";
             echo "<td>" . $row_number . "</td>"; // Display the match number
-            $formatted_date = date("F j, Y", strtotime($row['date']));
-            echo "<td>" . $formatted_date . "</td>";
+            $formatted_date = date("D, j M Y", strtotime($row['date']));
+            $match_time = ($row['is_evening_match'] == 0) ? "3:30 PM" : "7:30 PM";
+            echo "<td>" . $formatted_date . " - " . $match_time . "</td>";
             echo "<td>" . $row['home_team'] . "</td>";
             echo "<td>" . $row['away_team'] . "</td>";
             echo "<td>" . $row['venue'] . "</td>";
