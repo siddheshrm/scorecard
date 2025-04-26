@@ -1,98 +1,149 @@
 ## Cricket Tournament Management System
 
-This PHP and MySQL-based project is designed to manage a cricket tournament with user and admin functionalities. It allows users to sign up, view tournament scorecards and enables admins to manage matches.
+Easily manage cricket tournament matches and points tables using **PHP** and **MySQL**.
+This project is inspired by the **Indian Premier League (IPL)** scorecard system and aims to closely replicate its league-style format. It uses predefined teams, venues, and scheduling to showcase MySQL proficiency, especially in handling dynamic, CRUD-intensive data operations.
+
+Admins can input critical match details such as participating teams, toss outcomes, venue, and Net Run Rate (NRR), allowing the system to generate an accurate and dynamic points table.
+
+Additionally, the system maintains match histories for each team, offering comprehensive insights into team performance throughout the tournament.
+
+---
 
 #### Features
 
-##### User Registration and Authentication:
+##### User Registration and Authentication
 
-a) New users can sign up by entering a unique username, age, email and password.
-b) User authentication ensures secure access to the system.
+- Only **Super Admin** is authenticated to register new admins.
+- User authentication ensures secure access to the system.
 
-##### User Dashboard:
+##### Admin Privileges
 
-a) Upon login, users can view the scorecard of the entire tournament.
+- Admin users have special access rights, including:
+  - Creating new matches
+  - Deleting existing matches if necessary
 
-##### Admin Privileges:
+##### Password Recovery Feature
 
-a) Admin user has special access rights, including creating new matches, updating match details, and deleting existing matches if necessary.
+- Allows users to reset their forgotten passwords using **PHPMailer**.
+- Users receive an email with a unique reset link (valid for 15 minutes).
+- Dynamic email content greets users by their registered name.
 
-##### Password Recovery Feature:
+##### Additional Features
 
-a) The Password Recovery feature allows users to reset their forgotten passwords, implemented using PHPMailer. Upon entering their registered email address, users receive an email with a unique reset link, valid for 15 minutes.
-b) This link directs them to a page where they can create a new password. This feature also supports dynamic email content, greeting users by their registered name.
+- **Strike Rate Calculator** – Calculates a batsman's strike rate based on runs scored and balls faced.
+- **Duckworth Lewis Calculator** – The DLS Calculator is a work-in-progress and may not provide accurate results due to the lack of sufficient real-world data and scenarios. (_under development_).
+- **Reduced Overs Match Support** – Admin can mark a match as "Reduced" and specify total overs per side (minimum 5, maximum 19 for T20Is as per ICC) due to weather or interruptions. System adapts ball inputs and logic accordingly.
 
-##### Additional Features:
+---
 
-a) <b>Strike Rate Calculator</b> - calculates the strike rate of each batsman based on the number of balls faced and runs scored.
-b) <b>Duckworth Lewis Calculator</b> - calculates par score in rain-affected matches.
-c) <b>Cricket Trivia</b> - Fetches cricket trivia from a custom API hosted on Heroku. The trivia is fetched automatically based on the date of the month to showcase basic knowledge of REST APIs.
+#### Project Information
 
-#### Technologies Used
+- Developed with ~2500 lines of PHP backend code
+- 50+ Git commits
+- Technologies used: PHP, MySQL, HTML, CSS, JavaScript
 
-PHP, MySQL, HTML, and JavaScript.
+---
 
 #### Scorecard Calculations
 
-a) Ranks teams primarily based on points, and secondarily based on NRR.
-b) The scorecard is designed to update in such a way that, it calculates the Net Run Rate of each team based on the number of overs and balls played, wickets lost and runs scored. (Net Run Rate is calculated differently based on whether the team gets all out.)
-c) Updates scorecard including matches played, wins, losses, tied matches, points, and NRR.
+a) Ranks teams primarily based on **Points**, and secondarily based on **Net Run Rate (NRR)**.  
+b) Calculates NRR based on: overs and balls played, wickets lost, runs scored and conceded, with special handling for teams that are all out or affected by reduced overs.  
+c) Updates scorecard including **matches played, toss and decisions, venues, wins, losses, tied matches, points, and NRR**.
+
+#### Match Handling Scenarios
+
+- **Abandoned Matches**
+
+  - If a match is abandoned (e.g., due to rain), both teams are awarded 1 point each, ensuring the match is treated as "No Result."
+  - **Validation**:  
+    ➔ All score input fields are disabled when a match is marked as abandoned, preventing accidental data entry.
+
+- **Tied Matches**
+
+  - When both teams have equal scores at the end of their innings, a Super Over is triggered to determine the winner.
+  - **Validation**:  
+    ➔ When scores are tied, an additional hidden field (Super Over Winner selection) becomes visible and **must** be selected before submission.
+
+- **Reduced Overs**
+  - Matches affected by weather or other interruptions are recorded with a reduced number of overs and recalculated accordingly.
+  - **Validation**:  
+    ➔ Users are allowed to enter overs between **5 and 19** only.  
+    ➔ Values below 5 or above 19 overs are **not permitted**, as per ICC standards that a minimum of a 5-overs match must be completed by both teams to get a valid result.
+
+---
 
 #### The Net Run Rate (NRR) calculation
 
-##### Formula :
+##### Formula:
 
-Overs played = overs played + (balls played/6)
-For = (number of runs scored/number of overs played)
-Against = (number of runs conceded/number of overs bowled)
-Net Run Rate = For - Against
+- **Overs played** = overs played + (balls played / 6)
+- **For** = number of runs scored / number of overs played
+- **Against** = number of runs conceded / number of overs bowled
+- **Net Run Rate** = For - Against
 
-##### Conditions handled while calculating NRR :
+##### Conditions handled while calculating NRR:
 
-a) Zero Runs: If runs scored are zero, overs are set to 20 and balls to 0 for that particular team.
-b) All Wickets Lost: If all 10 wickets are lost, overs are set to 20 and balls to 0 for that particular team.
-c) Inning 1 Specific: If the team did not complete 20 overs without losing all wickets, overs are set to 20 and balls to 0.
-d) Inning 2 Specific: If the team batting second scored fewer runs than the first inning and did not lose all wickets, overs are set to 20 and balls to 0.
-e) Inning 2 Specific: If the team batting second won without facing any legal delivery, overs are set to 0 and balls to 1 to avoid `division by zero error` in NRR calculations.
-f) General Case: In all other cases, actual overs and balls played are used to calculate NRR.
+a) **Zero Runs**: If a team scores 0 runs, overs are set to the reduced total overs (or 20 overs) and balls to 0.  
+b) **All Wickets Lost**: If all 10 wickets fall, overs are set to the reduced total overs (or 20 overs) and balls to 0.  
+c) **Inning 1 Specific**: If the first batting team doesn’t complete the reduced overs (or 20 overs) and doesn’t lose all wickets, overs are set to the reduced total overs (or 20 overs) and balls to 0.  
+d) **Inning 2 Specific (Lost Without All Out)**: If the second batting team scores fewer than the first team without losing all wickets, overs are set to the reduced total overs (or 20 overs) and balls to 0.  
+e) **Inning 2 Specific (Won Without Facing Legal Delivery)**: If the second team wins without facing a legal delivery, overs are set to 0 and balls to 1 (to prevent division by zero error).  
+f) **General Case**: All other scenarios use the actual overs and balls faced/bowled, based on either the full or reduced overs, to calculate NRR.
 
-#### All possible conditions when updating existing match data and changes in the points table have been thoroughly handled
+---
 
-a) Match result remained the same, change in NRR for both teams.
-b) Match result overturned, changes in points, wins, losses, NRR for both teams.
-c) Match result changed to tied, changes in points, wins, losses, NRR.
-d) Match result remained tied, changes in match details.
-e) The match result changed from tied to having a clear winner, changes in match details and points table.
+#### Points Table Updates Based on Match Data Changes (*Temporarily Disabled*)
+
+⚠️ **Note:** Editing existing match data is currently disabled. To make any changes, please delete the existing match and re-add it with the correct details.
+
+---
+
+### Real-World Data Reference
+
+This project simulates the IPL 2025 season using real match data, with predefined teams, venues, and a schedule.
+
+As of now, 42 out of 70 matches have been entered. New match data is added daily as matches conclude.
+
+Live updates are reflected on the deployed project [here](https://scorecard.siddheshmestri.online), with match data and points table updated in real-time.
+
+The README.md will be updated once the full season concludes, including a final screenshot of the complete points table and match data.
 
 #### Please Note
 
-a) Only a single user has admin privileges to edit scorecards.
-b) The project does not focus on making the site fully responsive.
+This project is primarily focused on functionality and database handling. It does not emphasize full mobile responsiveness.
 
-#### Upcoming Implementations
-
-a) User Privileges To Update: Instead of only admins being able to update the scorecard, all users will be able to update the scorecard in upcoming versions.
-b) Handling 'No Result' Matches: Currently, only tied matches are handled. Handling 'no result' matches (matches not completed due to rain or any other circumstances) will be implemented in a later stage.
+---
 
 #### Hosting
 
 The web application is hosted at: https://scorecard.siddheshmestri.online
 
+---
+
+#### Reference
+
+For comparison with the real-time IPL standings, refer to the official [IPL Points Table](https://www.iplt20.com/points-table/men).
+
+---
+
 #### About Me
 
-You can learn more about me and my other projects on my personal portfolio website at https://siddheshmestri.online
+You can learn more about me and my other projects on my [portfolio website](https://siddheshmestri.online).
+
+---
 
 #### Below are screenshots of the web-app
 
-Home/Login page : ![Home/Login page](<screenshots/home.png>)
-Register page : ![Register page](<screenshots/register.png>)
-Forgot Password page : ![Forgot Password page](<screenshots/forgot_password.png>)
-Reset Password page : ![Reset Password page](<screenshots/reset_password.png>)
-User dashboard : ![User dashboard](<screenshots/user_dashboard.png>)
-Admin dashboard : ![Admin dashboard](<screenshots/admin_dashboard.png>)
-Create match page (admin) : ![Create match page](<screenshots/create_match.png>)
-Update match page (admin) : ![Update match page](<screenshots/update_match.png>)
-Edit match page (admin) : ![Update match page](<screenshots/edit_match.png>)
-Tournament management page (admin) : ![Tournament history page](<screenshots/tournament_history_page.png>)
-Strike rate calculator page : ![Strike rate calculator page](<screenshots/strike_rate_calculator.png>)
-DLS par score calculator page :![DLS par score calculator page](<screenshots/dls_calculator.png>)
+Home Page : ![Home Page](screenshots/home_page.png)
+Reference - Official IPL Points Table (for design and rules inspiration): ![IPL Points Table](screenshots/IPL_points_table.png)
+Team Match History (Modal View) : ![Team Match History](screenshots/team_match_history.png)
+Register Page : ![Register Page](screenshots/register_admin.png)
+Login Page : ![Login Page](screenshots/login_page.png)
+Admin Dashboard-1 : ![Admin Dashboard-1](screenshots/admin_dashboard_1.png)
+Admin Dashboard-2 : ![Admin Dashboard-2](screenshots/admin_dashboard_2.png)
+Add New Match : ![Add New Match](screenshots/new_match.png)
+Update Match Details : ![Update Match Details](screenshots/update_match.png)
+Forgot Password Page : ![Forgot Password Page](screenshots/forgot_password.png)
+Reset Password Page : ![Reset Password Page](screenshots/reset_password.png)
+Strike Rate Calculator : ![Strike Rate Calculator](screenshots/strike_rate_calculator.png)
+DLS Par Score Calculator :![DLS Par Score Calculator](screenshots/dls_calculator.png)
