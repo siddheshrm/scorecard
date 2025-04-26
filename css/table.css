@@ -1,5 +1,6 @@
 body {
-  font-family: "Open Sans", sans-serif;
+  font-family: "Tuffy", sans-serif;
+  font-style: normal;
   background-color: #f4f4f4;
   margin: 0;
   padding: 0;
@@ -48,11 +49,11 @@ table tr:hover {
 
 a {
   text-decoration: none;
-  color: #007bff;
+  color: #223577;
 }
 
 a:hover {
-  color: #0056b3;
+  color: #40569c;
 }
 
 .team-info {
@@ -67,7 +68,3 @@ a:hover {
   width: 45px;
   height: 45px;
 }
-
-/* .top-team {
-  background-color: #d4f5d6;
-} */

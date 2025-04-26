@@ -1,5 +1,6 @@
 body {
-  font-family: "Open Sans", sans-serif;
+  font-family: "Tuffy", sans-serif;
+  font-style: normal;
   background-color: #f4f4f4;
   margin: 0;
   padding: 0;
@@ -29,7 +30,8 @@ form input[type="date"],
 form input[type="text"],
 form select,
 form input[type="submit"] {
-  font-family: "Open Sans", sans-serif;
+  font-family: "Tuffy", sans-serif;
+  font-style: normal;
   width: 100%;
   max-width: 1000px;
   padding: 10px;
@@ -45,9 +47,10 @@ form select {
 }
 
 form input[type="submit"] {
-  font-family: "Open Sans", sans-serif;
+  font-family: "Tuffy", sans-serif;
+  font-style: normal;
   width: 100%;
-  background-color: #007bff;
+  background-color: #223577;
   color: #fff;
   border: none;
   border-radius: 4px;
@@ -57,7 +60,7 @@ form input[type="submit"] {
 }
 
 form input[type="submit"]:hover {
-  background-color: #0056b3;
+  background-color: #40569c;
 }
 
 .alert {
@@ -79,9 +82,9 @@ p {
 
 a {
   text-decoration: none;
-  color: #007bff;
+  color: #223577;
 }
 
 a:hover {
-  color: #0056b3;
+  color: #40569c;
 }

@@ -32,9 +32,10 @@ $total_pages = ceil($total_records_fetched / $limit); // Total pages required
     <title>Tournament History</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,300..800;1,300..800&display=swap" rel="stylesheet">
-    <link rel="icon" href="./media/scorecard.com.png" type="image/png">
+    <link href="https://fonts.googleapis.com/css2?family=Tuffy:ital,wght@0,400;0,700;1,400;1,700&display=swap" rel="stylesheet">
+    <link rel="icon" href="./media/logos/IPL.png" type="image/png">
     <link rel="stylesheet" href="css/view_matches.css">
+    <script src="https://kit.fontawesome.com/9dd0cb4077.js" crossorigin="anonymous"></script>
 </head>
 
 <body>
@@ -65,8 +66,8 @@ $total_pages = ceil($total_records_fetched / $limit); // Total pages required
             echo "<td>" . $row['result'] . "</td>";
             echo "<td class='action-buttons'>";
             // Enable update button regardless of result value
-            echo "<button class='update-btn' data-match-no='" . $row['match_no'] . "' data-result='" . $row['result'] . "'>Update</button>";
-            echo "<button class='delete-btn' onclick='deleteMatch(" . $row['match_no'] . ")'>Delete</button>";
+            echo "<button class='update-btn' data-match-no='" . $row['match_no'] . "' data-result='" . $row['result'] . "'><i class='fa-solid fa-pen-to-square'></i></button>";
+            echo "<button class='delete-btn' onclick='deleteMatch(" . $row['match_no'] . ")'><i class='fa-solid fa-trash'></i></button>";
             echo "</td>";
             echo "</tr>";
             $row_number--;
@@ -92,7 +93,8 @@ $total_pages = ceil($total_records_fetched / $limit); // Total pages required
     }
     ?>
 
-    <p><a href="create_match.php">Add New Match</a> | <a href="admin_dashboard.php">Go To Dashboard</a> | <a href="logout.php">Logout</a></p>
+    <p><a href="create_match.php">Add New Match</a> | <a href="admin_dashboard.php">Go To Dashboard</a> | <a
+            href="logout.php">Logout</a></p>
 
     <script>
         function updateMatch(matchNo, result) {

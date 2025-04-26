@@ -1,5 +1,6 @@
 body {
-  font-family: "Open Sans", sans-serif;
+  font-family: "Tuffy", sans-serif;
+  font-style: normal;
   line-height: 1.6;
   background-color: #f0f0f0;
 }
@@ -14,8 +15,13 @@ p {
   margin-bottom: 10px;
 }
 
-form {
-  margin-bottom: 20px;
+.section {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  flex-direction: row;
+  flex-wrap: wrap;
+  gap: 20px;
 }
 
 label {
@@ -30,12 +36,14 @@ input[type="submit"] {
   border: 1px solid #ccc;
   border-radius: 4px;
   margin-bottom: 10px;
+  min-width: 100px;
 }
 
 input[type="submit"] {
-  background-color: #4caf50;
+  background-color: #223577;
   color: #fff;
-  font-family: "Open Sans", sans-serif;
+  font-family: "Tuffy", sans-serif;
+  font-style: normal;
   padding: 10px;
   margin-right: 5px;
   cursor: pointer;
@@ -45,7 +53,7 @@ input[type="submit"] {
 }
 
 input[type="submit"]:hover {
-  background-color: #45a049;
+  background-color: #40569c;
 }
 
 a {
@@ -53,7 +61,7 @@ a {
 }
 
 a:hover {
-  color: #0056b3;
+  color: #40569c;
 }
 
 /* Specific styles for DLS calculator */
@@ -67,7 +75,8 @@ a:hover {
 }
 
 select#matchSituation {
-  font-family: "Open Sans", sans-serif;
+  font-family: "Tuffy", sans-serif;
+  font-style: normal;
   padding: 8px;
   font-size: 16px;
   border: 1px solid #ccc;
@@ -79,7 +88,7 @@ select#matchSituation {
 }
 
 select#matchSituation:hover {
-  border-color: #45a049;
+  border-color: #40569c;
   background-color: #f9f9f9;
 }
 

@@ -7,8 +7,8 @@
     <title>Strike Rate Calculator</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,300..800;1,300..800&display=swap" rel="stylesheet">
-    <link rel="icon" href="../media/scorecard.com.png" type="image/png">
+    <link href="https://fonts.googleapis.com/css2?family=Tuffy:ital,wght@0,400;0,700;1,400;1,700&display=swap" rel="stylesheet">
+    <link rel="icon" href="../media/logos/IPL.png" type="image/png">
     <link rel="stylesheet" href="../css/common.css">
 </head>
 
@@ -16,18 +16,26 @@
     <h2>Batting Strike Rate Calculator</h2>
 
     <p>
-        Batting strike rate (s/r) is defined for a batter as the average number of runs scored per 100 balls faced. The higher the strike rate, the more effective a batter is at scoring quickly.
+        Batting strike rate (s/r) is defined for a batter as the average number of runs scored per 100 balls faced. The
+        higher the strike rate, the more effective a batter is at scoring quickly.
     </p>
 
     <form method="POST">
-        <label for="runs">Runs Scored:</label>
-        <input type="number" id="runs" name="runs" required><br>
+        <div class="section row-group">
+            <div class="form-group">
+                <label for="runs">Runs Scored<span style="color: red;">*<span /></label>
+                <input type="number" id="runs" name="runs" required>
+            </div>
 
-        <label for="balls">Balls Faced:</label>
-        <input type="number" id="balls" name="balls" required><br>
+            <div class="form-group">
+                <label for="balls">Balls Faced<span style="color: red;">*<span /></label>
+                <input type="number" id="balls" name="balls" required>
+            </div>
+        </div>
 
         <input type="submit" value="Calculate">
     </form>
+    <hr>
 
     <?php
     if ($_SERVER["REQUEST_METHOD"] == "POST") {
@@ -41,9 +49,9 @@
             $strikeRate = ($runs / $balls) * 100;
             // Format the strike rate to 2 decimal places
             $strikeRateFormatted = number_format($strikeRate, 2);
-            echo "<p><b>$runs Runs scored in $balls balls with the Strike Rate of $strikeRateFormatted</b></p>";
+            echo "<b>$runs Runs scored in $balls balls with the Strike Rate of $strikeRateFormatted</b>";
         } else {
-            echo "<p>Please fill in both fields.</p>";
+            echo "Please fill in both fields.";
         }
     }
     ?>

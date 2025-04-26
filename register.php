@@ -7,15 +7,14 @@
     <title>Register to scorecard.com</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,300..800;1,300..800&display=swap" rel="stylesheet">
-    <link rel="icon" href="./media/scorecard.com.png" type="image/png">
+    <link href="https://fonts.googleapis.com/css2?family=Tuffy:ital,wght@0,400;0,700;1,400;1,700&display=swap" rel="stylesheet">
+    <link rel="icon" href="./media/logos/IPL.png" type="image/png">
     <link rel="stylesheet" href="css/style.css">
 
 </head>
 
 <body>
-    <h2>Welcome to <i>scorecard.com</i></h2>
-    <h3>Register New Admin</h3>
+    <h2>Register New Admin</h2>
     <form method="POST" action="register.php">
         <input type="text" name="name" placeholder="name*" required><br>
         <input type="text" name="username" placeholder="username*" required><br>

@@ -1,5 +1,6 @@
 body {
-  font-family: "Open Sans", sans-serif;
+  font-family: "Tuffy", sans-serif;
+  font-style: normal;
   line-height: 1.6;
   background-color: #f4f4f4;
   margin: 0;
@@ -7,7 +8,7 @@ body {
   display: flex;
   flex-direction: column;
   min-height: 100vh;
-  overflow: hidden;
+  /* overflow: hidden; */
 }
 
 h2 {
@@ -28,7 +29,7 @@ table td {
   border: 1px solid #ddd;
   padding: 8px;
   text-align: left;
-  font-size: 0.85rem;
+  font-size: 1rem;
 }
 
 table th {
@@ -39,37 +40,41 @@ table td {
   background-color: #fff;
 }
 
+table td:last-child,
+table th:last-child {
+  width: 7.5%;
+}
+
 .action-buttons {
   text-align: center;
 }
 
 .update-btn,
 .delete-btn {
-  font-family: "Open Sans", sans-serif;
   padding: 10px;
   margin-right: 5px;
   cursor: pointer;
   border: none;
-  border-radius: 4px;
-  font-size: 0.8rem;
+  border-radius: 5px;
+  font-size: 1rem;
 }
 
 .update-btn {
-  background-color: #4caf50;
-  color: white;
+  background-color: #4a689f;
+  color: #fff;
 }
 
 .update-btn:hover {
-  background-color: #45a049;
+  background-color: #223577;
 }
 
 .delete-btn {
-  background-color: #f44336;
-  color: white;
+  background-color: #d44f4f;
+  color: #fff;
 }
 
 .delete-btn:hover {
-  background-color: #da190b;
+  background-color: #aa3c3c;
 }
 
 p {
@@ -78,11 +83,11 @@ p {
 
 a {
   text-decoration: none;
-  color: #007bff;
+  color: #223577;
 }
 
 a:hover {
-  color: #0056b3;
+  color: #40569c;
 }
 
 .pagination {
@@ -95,19 +100,21 @@ a:hover {
 .pagination a {
   padding: 8px 12px;
   text-decoration: none;
-  color: #000;
-  background-color: #ffe985;
+  color: #223577;
+  background-color: #e0e6f6;
   border-radius: 5px;
   transition: background-color 0.3s;
-  font-size: 0.85rem;
+  font-size: 1rem;
 }
 
 .pagination a:hover {
-  background-color: #ffd61f;
+  background-color: #40569c;
+  color: #fff;
 }
 
 .pagination a.active {
-  background-color: #ffdd47;
+  background-color: #223577;
+  color: #fff;
   font-weight: bold;
   pointer-events: none;
 }
