@@ -65,10 +65,20 @@ c) Updates scorecard including **matches played, toss and decisions, venues, win
     ➔ When scores are tied, an additional hidden field (Super Over Winner selection) becomes visible and **must** be selected before submission.
 
 - **Reduced Overs**
+
   - Matches affected by weather or other interruptions are recorded with a reduced number of overs and recalculated accordingly.
   - **Validation**:  
     ➔ Users are allowed to enter overs between **5 and 19** only.  
     ➔ Values below 5 or above 19 overs are **not permitted**, as per ICC standards that a minimum of a 5-overs match must be completed by both teams to get a valid result.
+
+- **Second Innings Reduced Matches (DLS Method)**
+
+  - In some weather-affected matches, only the second innings is shortened. The DLS (Duckworth-Lewis-Stern) method is applied to set a revised target.
+  - The team batting second must chase this revised target within the reduced overs.
+  - **Validation**:
+    ➔ User must enter the revised overs and revised target when this condition is selected.
+    ➔ Input fields for revised values are enabled only in this scenario.
+    ➔ If scores are tied at the revised target, the Super Over option must still be selected.
 
 ---
 
@@ -94,7 +104,7 @@ f) **General Case**: All other scenarios use the actual overs and balls faced/bo
 
 #### Points Table Updates Based on Match Data Changes (*Temporarily Disabled*)
 
-⚠️ **Note:** Editing existing match data is currently disabled. To make any changes, please delete the existing match and re-add it with the correct details.
+⚠️ **Note:** Editing existing match data is currently disabled. To make any changes, the existing match needs to be deleted and re-added with the correct details.
 
 ---
 

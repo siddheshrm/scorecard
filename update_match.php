@@ -156,11 +156,21 @@ include 'config.php';
             echo "<select name='match_status' id='match_status' required onchange='toggleMatchStatus(this.value)'>";
             echo "<option value='completed'>Completed</option>";
             echo "<option value='reduced'>Reduced Overs (Shortened Match Due To Rain, etc.)</option>";
+            echo "<option value='second_innings_reduced'>Second Inning Shortened Due To Rain (DLS Method)</option>";
             echo "<option value='abandoned'>No Result (Abandoned Due To Rain, Cancelled, etc.)</option>";
             echo "</select>";
 
-            // Hidden flag field
+            // Hidden flag field for completed matches (default)
             echo "<input type='hidden' name='isCompleted' id='isCompleted' value='true'>";
+
+            // Second Inning Reduced Inputs (initially hidden)
+            echo "<div id='dlsInputs' style='display: none; margin-top: 10px;'>";
+            echo "<label for='revised_overs'>2nd Inning Reduced To Overs :</label>";
+            echo "<input type='number' name='revised_overs' id='revised_overs' placeholder='Enter overs between 5 and 19' min='5' max='19'><br>";
+            // As per ICC rules, both teams need to have batted for a minimum of 5 overs each to constitute a valid match in a T20 match
+            echo "<label for='revised_target'>Revised Target:</label>";
+            echo "<input type='number' name='revised_target' id='revised_target' min='1'><br>";
+            echo "</div>";
 
             // Reduced overs input (initially hidden)
             echo "<div id='reducedOversInput' style='display:none; margin-top:10px;'>";
@@ -231,7 +241,11 @@ include 'config.php';
             const reducedInputDiv = document.getElementById('reducedOversInput');
             const reducedInput = document.getElementById('reduced_match_overs');
 
-            // Exclude reduced_overs field from disabling
+            const secondInningsDiv = document.getElementById('dlsInputs');
+            const revisedOvers = document.getElementById('revised_overs');
+            const revisedTarget = document.getElementById('revised_target');
+
+            // Disable all score inputs except reduced_match_overs
             const scoreInputs = Array.from(document.querySelectorAll("input[type='number']")).filter(
                 input => input.id !== 'reduced_match_overs'
             );
@@ -243,6 +257,11 @@ include 'config.php';
                 reducedInputDiv.style.display = 'none';
                 reducedInput.required = false;
                 reducedInput.disabled = true;
+                secondInningsDiv.style.display = 'none';
+                revisedOvers.required = false;
+                revisedOvers.disabled = true;
+                revisedTarget.required = false;
+                revisedTarget.disabled = true;
             } else if (value === 'reduced') {
                 isCompletedField.value = 'true';
                 form.action = 'submit_score.php';
@@ -250,24 +269,56 @@ include 'config.php';
                 reducedInputDiv.style.display = 'block';
                 reducedInput.required = true;
                 reducedInput.disabled = false;
-            } else {
+                secondInningsDiv.style.display = 'none';
+                revisedOvers.required = false;
+                revisedOvers.disabled = true;
+                revisedTarget.required = false;
+                revisedTarget.disabled = true;
+            } else if (value === 'second_innings_reduced') {
                 isCompletedField.value = 'true';
                 form.action = 'submit_score.php';
                 scoreInputs.forEach(input => input.disabled = false);
                 reducedInputDiv.style.display = 'none';
                 reducedInput.required = false;
                 reducedInput.disabled = true;
-            }
+                secondInningsDiv.style.display = 'block';
+                revisedOvers.required = true;
+                revisedOvers.disabled = false;
+                revisedTarget.required = true;
+                revisedTarget.disabled = false;
 
-            if (value === 'reduced') {
-                reducedInput.setCustomValidity('');
-                reducedInput.addEventListener('input', function () {
-                    if (this.value < 5 || this.value > 19) {
-                        this.setCustomValidity('Overs must be between 5 and 19');
+                // Add dynamic validation on 2nd innings overs
+                revisedOvers.setCustomValidity('');
+                revisedOvers.addEventListener('input', function () {
+                    const maxOvers = parseInt(this.value);
+                    if (maxOvers < 5 || maxOvers > 20) {
+                        this.setCustomValidity('Overs must be between 5 and 20');
                     } else {
                         this.setCustomValidity('');
                     }
+
+                    // Update inning2Overs max dynamically
+                    inning2Overs.max = maxOvers;
+                    if (parseInt(inning2Overs.value) === maxOvers) {
+                        inning2Balls.value = 0;
+                        inning2Balls.readOnly = true;
+                    } else {
+                        inning2Balls.readOnly = false;
+                    }
                 });
+            } else {
+                // Default: Completed match
+                isCompletedField.value = 'true';
+                form.action = 'submit_score.php';
+                scoreInputs.forEach(input => input.disabled = false);
+                reducedInputDiv.style.display = 'none';
+                reducedInput.required = false;
+                reducedInput.disabled = true;
+                secondInningsDiv.style.display = 'none';
+                revisedOvers.required = false;
+                revisedOvers.disabled = true;
+                revisedTarget.required = false;
+                revisedTarget.disabled = true;
             }
         }
     </script>
@@ -319,19 +370,25 @@ include 'config.php';
     </script>
 
     <script>
-        const reducedOversInput = document.getElementById('reduced_match_overs');
+        const matchOversInput = document.getElementById('reduced_match_overs'); // for full match reduction
+        const reducedOversInput = document.getElementById('revised_overs'); // for second innings shortened case
         const inning1Overs = document.getElementById('inning1_overs');
         const inning1Balls = document.getElementById('inning1_balls');
         const inning2Overs = document.getElementById('inning2_overs');
         const inning2Balls = document.getElementById('inning2_balls');
+        const matchStatus = document.getElementById('match_status');
 
         function handleOversValidation() {
-            const matchOvers = parseInt(reducedOversInput.value) || 20; // Default 20 if not reduced
-            inning1Overs.max = matchOvers;
-            inning2Overs.max = matchOvers;
+            const matchStatusValue = matchStatus.value;
+
+            const reducedMatchOvers = parseInt(matchOversInput?.value) || 20;
+            const secondInningsOvers = parseInt(reducedOversInput?.value) || 20;
 
             // Inning-1
-            if (parseInt(inning1Overs.value) === matchOvers) {
+            const inning1Max = (matchStatusValue === 'reduced') ? reducedMatchOvers : 20;
+            inning1Overs.max = inning1Max;
+
+            if (parseInt(inning1Overs.value) === inning1Max) {
                 inning1Balls.value = 0;
                 inning1Balls.readOnly = true;
             } else {
@@ -339,7 +396,10 @@ include 'config.php';
             }
 
             // Inning-2
-            if (parseInt(inning2Overs.value) === matchOvers) {
+            const inning2Max = (matchStatusValue === 'second_innings_reduced') ? secondInningsOvers : inning1Max;
+            inning2Overs.max = inning2Max;
+
+            if (parseInt(inning2Overs.value) === inning2Max) {
                 inning2Balls.value = 0;
                 inning2Balls.readOnly = true;
             } else {
@@ -347,10 +407,12 @@ include 'config.php';
             }
         }
 
-        // Attach listeners to validate when overs change
-        reducedOversInput.addEventListener('input', handleOversValidation);
+        // Attach listeners
+        if (matchOversInput) matchOversInput.addEventListener('input', handleOversValidation);
+        if (reducedOversInput) reducedOversInput.addEventListener('input', handleOversValidation);
         inning1Overs.addEventListener('input', handleOversValidation);
         inning2Overs.addEventListener('input', handleOversValidation);
+        matchStatus.addEventListener('change', handleOversValidation);
     </script>
 </body>
 

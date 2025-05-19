@@ -19,6 +19,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $match_no = intval($_POST['match_no']);
         $match_status = $_POST['match_status'];
 
+        // Safely retrieve and typecast revised match values only if set (used in reduced matches)
+        // Prevents errors in normal matches where these values may not be submitted
+        $revised_overs = isset($_POST['revised_overs']) ? intval($_POST['revised_overs']) : 0;
+        $revised_target = isset($_POST['revised_target']) ? intval($_POST['revised_target']) : 0;
+        $adjusted_inning1_score = $revised_target > 0 ? $revised_target - 1 : 0;
+
         // Inning-1
         $inning1_runs = intval($_POST['inning1_runs']);
         $inning1_wickets = intval($_POST['inning1_wickets']);
@@ -34,8 +40,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         // Determine overs for this match
         if ($match_status === "reduced" && isset($_POST['reduced_match_overs'])) {
             $matchOvers = intval($_POST['reduced_match_overs']);
+        } else if ($match_status === "second_innings_reduced" && isset($_POST['revised_overs'])) {
+            $matchOvers = intval($_POST['revised_overs']);
         } else {
-            $matchOvers = 20; // Default for completed match
+            $matchOvers = 20; // Default for completed match, OR reduced second inning
+        }
+
+        // Adjust $matchOvers if only second innings was reduced
+        $inning2_matchOvers = $matchOvers; // Default
+
+        if ($match_status === "second_innings_reduced" && isset($_POST['revised_overs'])) {
+            $inning2_matchOvers = intval($_POST['revised_overs']);
         }
 
         // Calculate overs and balls for NRR based on wickets lost
@@ -45,20 +60,27 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         // Inning-2
         if ($inning2_runs == 0) {
-            $inning2_overs_nrr = $matchOvers;
+            // Case 1: Team scored 0 runs
+            // Assign full available overs (match overs or revised overs) for NRR calculation
+            $inning2_overs_nrr = $inning2_matchOvers;
             $inning2_balls_nrr = 0;
         } else {
-            // Handle the case where all runs are scored via no balls and wides
+            // Case 2: All runs scored via extras (no legal deliveries faced)
+            // Prevent division by zero by assuming minimum 1 ball faced
             if ($inning2_overs == 0 && $inning2_balls == 0 && $inning2_runs > 0) {
-                // Assign a value representing minimum one ball faced to avoid 'division by zero error' while calculating NRR
                 echo "<script>alert('Team batting second won without facing a legal delivery. Minimum 1 ball assumed for NRR calculation.');</script>";
                 $inning2_overs_nrr = 0;
                 $inning2_balls_nrr = 1;
-            } elseif ($inning2_wickets == 10 || ($inning2_runs < $inning1_runs && $inning2_wickets != 10)) {
-                // Team all out or retired early due to an injury/situation. Full $matchOvers overs assumed for NRR.
-                $inning2_overs_nrr = $matchOvers;
+            }
+            // Case 3: Team all out OR team lost but innings completed (wickets = 10 or runs < target with wickets remaining)
+            // Assign full available overs for NRR calculation
+            elseif ($inning2_wickets == 10 || ($inning2_runs < $inning1_runs && $inning2_wickets != 10)) {
+                $inning2_overs_nrr = $inning2_matchOvers;
                 $inning2_balls_nrr = 0;
-            } else {
+            }
+            // Case 4: Team won normally with legal deliveries faced
+            // Use actual overs and balls faced for NRR calculation
+            else {
                 $inning2_overs_nrr = $inning2_overs;
                 $inning2_balls_nrr = $inning2_balls;
             }
@@ -103,24 +125,42 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $bowling_team = $bowling_team_result->fetch_assoc()['team_name'];
 
             // Determine match type label
-            $matchLabel = ($match_status === "reduced") ? " ($matchOvers overs game - due to rain)" : "";
+            $matchLabel = "";
+            if ($match_status === "reduced") {
+                $matchLabel = " ($matchOvers overs game - due to rain)";
+            } else if ($match_status === "second_innings_reduced") {
+                $matchLabel = " by DLS method (Target $revised_target runs in $revised_overs overs)";
+            }
+
+            // Set the target runs based on match conditions
+            if ($match_status === "second_innings_reduced" && isset($_POST['revised_target'])) {
+                $adjusted_inning1_score = intval($_POST['revised_target']) - 1;
+            } else {
+                $adjusted_inning1_score = $inning1_runs;
+            }
 
             // Determine winning and losing teams and result message
-            if ($inning1_runs > $inning2_runs) {
-                $resultMessage = "$batting_team won by " . ($inning1_runs - $inning2_runs) . " runs$matchLabel";
+            if ($inning2_runs < $adjusted_inning1_score) {
+                // Team batting second lost
+                $resultMessage = "$batting_team won by " . ($adjusted_inning1_score - $inning2_runs) . " runs$matchLabel";
                 $winning_team = $batting_team;
                 $losing_team = $bowling_team;
-            } elseif ($inning1_runs < $inning2_runs) {
-                $resultMessage = "$bowling_team won by " . (10 - $inning2_wickets) . " wickets$matchLabel";
+            } elseif ($inning2_runs > $adjusted_inning1_score) {
+                // Team batting second won
+                $wicketsRemaining = 10 - $inning2_wickets;
+                $resultMessage = "$bowling_team won by $wicketsRemaining wickets$matchLabel";
                 $winning_team = $bowling_team;
                 $losing_team = $batting_team;
             } else {
                 // The match is tied
+
+                // Note: This also handles DLS-affected tied matches (e.g., when inning2_runs == revised target).
+                // If needed in future, we can add separate logic or messaging for DLS-tied matches here.
                 if (!empty($_POST['super_over_winner'])) {
                     $super_over_winner = $_POST['super_over_winner'];
                     $winning_team = $super_over_winner;
                     $losing_team = ($super_over_winner === $batting_team) ? $bowling_team : $batting_team;
-                    $resultMessage = "Match tied$matchLabel. $super_over_winner won the match in Super Over.";
+                    $resultMessage = "Match tied$matchLabel. $super_over_winner won the match in Super Over";
                 } else {
                     $resultMessage = "Match tied$matchLabel.";
                     $winning_team = "";
@@ -161,6 +201,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     echo "No short name found for losing team<br>";
                 }
                 $stmt->close();
+            }
+
+            // Setting $inning1_runs based on DLS match condition
+            if ($match_status == "second_innings_reduced") {
+                $inning1_runs = $adjusted_inning1_score;
             }
 
             // Prepare update statement for tournament_data
