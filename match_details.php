@@ -62,7 +62,14 @@ if (!empty($team)) {
                                 <td><?php echo date("d", strtotime($match['date'])) . "&nbsp;" . date("M", strtotime($match['date'])); ?></td>
                                 <td><?php echo ($match['home_team'] === $team_short) ? $match['away_team'] : $match['home_team']; ?></td>
                                 <td><?php echo $match['venue']; ?></td>
-                                <td><?php echo $match['toss']; ?> decided to <?php echo $match['decision']; ?> first</td>
+                                <td><?php
+                                    if (empty($match['toss']) || empty($match['decision'])) {
+                                        echo "No Toss";
+                                    } else {
+                                        echo $match['toss'] . " decided to " . $match['decision'] . " first";
+                                    }
+                                    ?>
+                                </td>
                                 <td><?php echo $match['result']; ?></td>
                             </tr>
                         <?php endforeach; ?>

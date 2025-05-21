@@ -64,6 +64,12 @@ include 'config.php';
             <option value="">Select Venue</option>
         </select><br>
 
+        <label for="toss_status">Toss Status:</label>
+        <select id="toss_status" name="toss_status" onchange="handleMatchStatusChange();" required>
+            <option value="abandoned_after_toss" selected>Toss Completed</option>
+            <option value="abandoned_before_toss">Match Abandoned Without A Toss</option>
+        </select><br>
+
         <label for="toss_won_by">Toss Won By:</label>
         <select id="toss_won_by" name="toss_won_by" required>
             <option value="">Select Team</option>
@@ -160,6 +166,26 @@ include 'config.php';
                 event.preventDefault(); // Prevent form submission if user cancels
             }
         });
+    </script>
+
+    <script>
+        function handleMatchStatusChange() {
+            const status = document.getElementById("toss_status").value;
+            const toss = document.getElementById("toss_won_by");
+            const decision = document.getElementById("decided_to");
+
+            if (status === "abandoned_before_toss") {
+                toss.disabled = true;
+                decision.disabled = true;
+                toss.required = false;
+                decision.required = false;
+            } else {
+                toss.disabled = false;
+                decision.disabled = false;
+                toss.required = true;
+                decision.required = true;
+            }
+        }
     </script>
 
     <script>
