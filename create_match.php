@@ -116,7 +116,34 @@ include 'config.php';
             var venueDropdown = document.getElementById("venue");
             venueDropdown.innerHTML = "<option value=''>Select Venue</option>"; // Reset dropdown
 
-            if (venueOptions[team1]) {
+            // TEMPORARY CHANGE FOR IPL 2025 NEUTRAL VENUES
+            // Show all venues instead of filtering by home team
+            // Create a Set to keep track of venues already added (to avoid duplicates)
+            let addedVenues = new Set();
+
+            // Loop through each team in the venueOptions object
+            for (let team in venueOptions) {
+                // Loop through each venue of the current team
+                venueOptions[team].forEach(function (venue) {
+                    // Check if this venue has not been added yet
+                    if (!addedVenues.has(venue)) {
+                        // Add the venue to the Set to mark it as added
+                        addedVenues.add(venue);
+
+                        // Create a new <option> element
+                        var option = document.createElement("option");
+                        // Set the value of the <option> to the venue name
+                        option.value = venue;
+                        // Set the visible text of the <option> to the venue name
+                        option.textContent = venue;
+                        // Add the <option> to the venue dropdown in the DOM
+                        venueDropdown.appendChild(option);
+                    }
+                });
+            }
+
+            // OLD LOGIC (commented for future reactivation)
+            /*if (venueOptions[team1]) {
                 venueOptions[team1].forEach(function (venue) {
                     var option = document.createElement("option");
                     option.value = venue;
@@ -127,7 +154,7 @@ include 'config.php';
                 if (venueOptions[team1].length === 1) {
                     venueDropdown.value = venueOptions[team1][0]; // Auto-select if only one venue
                 }
-            }
+            }*/
         }
 
         function updateTossWonBy() {
