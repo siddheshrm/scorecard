@@ -2,4 +2,5 @@ config.php
 notes.txt
 dls/DLS.csv
 /PHPMailer
-password_recovery/forgot_password_handler.php
+.env
+/vendor

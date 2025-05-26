@@ -2,9 +2,14 @@
 include 'session_handler.php';
 include 'config.php';
 
+require_once __DIR__ . '/vendor/autoload.php';
+
+$dotenv = Dotenv\Dotenv::createImmutable(__DIR__);
+$dotenv->load();
+
 // Check if the logged-in user is a superadmin
 $logged_in_username = $_SESSION['username'] ?? '';
-$superadmin_username = 'SUPER_ADMIN'; // Replace with your super admin's username
+$superadmin_username = $_ENV['SUPERADMIN_USERNAME'];
 
 if (strcasecmp($logged_in_username, $superadmin_username) !== 0) {
     echo '<script>alert("You do not have the necessary permissions to create an admin account.")</script>';
