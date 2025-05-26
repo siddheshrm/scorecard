@@ -85,7 +85,7 @@ include 'config.php';
         $match_no = intval($_GET['match_no']);
 
         // Prepare a select statement to fetch match details
-        $stmt = $conn->prepare("SELECT date, venue, home_team, away_team, toss, decision FROM tournament_data WHERE match_no = ?");
+        $stmt = $conn->prepare("SELECT date, is_evening_match, venue, home_team, away_team, toss, decision FROM tournament_data WHERE match_no = ?");
         $stmt->bind_param("i", $match_no);
         $stmt->execute();
         $result = $stmt->get_result();
@@ -94,6 +94,7 @@ include 'config.php';
             // Fetch match details
             $row = $result->fetch_assoc();
             $date = $row['date'];
+            $is_evening_match = $row['is_evening_match'];
             $venue = $row['venue'];
             $home_team_short = $row['home_team'];
             $away_team_short = $row['away_team'];
@@ -141,7 +142,8 @@ include 'config.php';
             echo "<div class='card'>";
             echo "<h3>$home_team vs $away_team</h3>";
             $formatted_date = date("F j, Y", strtotime($row['date']));
-            echo "<p>Date: $formatted_date</p>";
+            $time = ($row['is_evening_match'] == 1) ? "7:30 PM" : "3:30 PM";
+            echo "<p>Date & Time: $formatted_date, $time</p>";
             echo "<p>Venue: $venue</p>";
             echo "<p>$toss_team won the toss and decided to $decision first</p>";
             echo "</div>";

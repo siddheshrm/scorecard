@@ -59,7 +59,8 @@ if ($result->num_rows > 0) {
         echo "<td>" . $team['no_result'] . "</td>";
         echo "<td>" . $team['runs_scored'] . "/" . number_format($team['overs_played'], 1) . "</td>";
         echo "<td>" . $team['runs_conceded'] . "/" . number_format($team['overs_bowled'], 1) . "</td>";
-        echo "<td>" . $team['nrr'] . "</td>";
+        $nrr_display = ($team['nrr'] > 0) ? '+' . $team['nrr'] : $team['nrr'];
+        echo "<td>" . $nrr_display . "</td>";
         echo "<td>" . $team['points'] . "</td>";
         // Embed team_name dynamically into the data-team attribute for JS access
         echo "<td><i class='fa-solid fa-caret-down dropdown-icon' data-team='" . $team['team_name'] . "'></i></td>";
