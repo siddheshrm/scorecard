@@ -18,7 +18,7 @@ $query = "SELECT team_name,
                  (overs_bowled + (balls_bowled DIV 6)) + (MOD(balls_bowled, 6) / 10) AS overs_bowled
           FROM teams
           GROUP BY team_name
-          ORDER BY points DESC, nrr DESC, wins DESC";
+          ORDER BY points DESC, wins DESC, nrr DESC";
 
 $result = $conn->query($query);
 
