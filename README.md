@@ -125,7 +125,7 @@ This project simulates the IPL 2025 season using real match data, with predefine
 
 All 70 group stage matches have now been completed and recorded in the system.
 
-Live updates are reflected on the deployed project [here](https://scorecard.siddheshmestri.online), with match data and points table updated in real-time.
+Live updates are reflected on the deployed project [here](https://scorecard.siddheshmestri.in), with match data and points table updated in real-time.
 
 The README is now updated with a final screenshot of the complete points table and summary of key statistics from the season.
 
@@ -148,7 +148,7 @@ All CRUD operations and match updates are functioning seamlessly, with real-time
 - **Mobile Responsiveness & UI Polish**: Refine front-end experience, particularly for smaller devices.
 - **Post-League Phase Extension**: Extend the system beyond league-stage matches to include **Qualifier 1**, **Eliminator**, **Qualifier 2**, and the **Final**, capturing the full tournament journey.
 - **Recent Match Form Indicator**: Display each team’s last five match results (e.g., W, L, NR) in the points table to reflect recent form and momentum.
-- **Match Score Summary in Points Table**: Show concise match summaries (e.g., "==KKR 131/10 vs RCB 49/10==") alongside existing toss and venue details in the points table for better context.
+- **Match Score Summary in Points Table**: Show concise match summaries (e.g., KKR 131/10 vs RCB 49/10) alongside existing toss and venue details in the points table for better context.
 
 ---
 
@@ -160,7 +160,7 @@ This project is primarily focused on functionality and database handling. It doe
 
 #### Hosting
 
-The web application is hosted at: https://scorecard.siddheshmestri.online
+The web application is hosted at: https://scorecard.siddheshmestri.in
 
 ---
 
@@ -172,7 +172,7 @@ For comparison with the real-time IPL standings, refer to the official [IPL Poin
 
 #### About Me
 
-You can learn more about me and my other projects on my [portfolio website](https://siddheshmestri.online).
+You can learn more about me and my other projects on my [portfolio website](https://siddheshmestri.in).
 
 ---
 
