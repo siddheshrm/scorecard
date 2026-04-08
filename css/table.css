@@ -39,12 +39,13 @@ table th {
   color: #fff;
 }
 
-table tr:nth-child(even) {
-  background-color: #f2f2f2;
+.team-row td {
+  transition: transform 0.2s ease;
 }
 
-table tr:hover {
-  background-color: #ddd;
+.team-row:hover td {
+  transform: scale(1.025);
+  cursor: pointer;
 }
 
 a {
@@ -67,4 +68,116 @@ a:hover {
   object-fit: cover;
   width: 45px;
   height: 45px;
+  border-radius: 50%;
+}
+
+/* Team Row Based Styling */
+.team-row td:first-child {
+  position: relative;
+}
+
+/* Left accent strip */
+.team-row td:first-child::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 4px;
+  height: 100%;
+}
+
+/* Right green strip for Top 4 teams */
+.top-team td:last-child {
+  position: relative;
+}
+
+.top-team td:last-child::after {
+  content: "";
+  position: absolute;
+  right: 0;
+  top: 0;
+  width: 4px;
+  height: 100%;
+  background: #28a745;
+}
+
+/* Team Colors */
+/* Mumbai Indians */
+.mi {
+  background: rgba(0, 75, 160, 0.16);
+}
+.mi td:first-child::before {
+  background: #004ba0;
+}
+
+/* Chennai Super Kings */
+.csk {
+  background: rgba(253, 185, 19, 0.16);
+}
+.csk td:first-child::before {
+  background: #fdb913;
+}
+
+/* Royal Challengers Bangalore */
+.rcb {
+  background: rgba(215, 25, 32, 0.16);
+}
+.rcb td:first-child::before {
+  background: #d71920;
+}
+
+/* Kolkata Knight Riders */
+.kkr {
+  background: rgba(58, 34, 93, 0.16);
+}
+.kkr td:first-child::before {
+  background: #3a225d;
+}
+
+/* Rajasthan Royals */
+.rr {
+  background: rgba(234, 26, 133, 0.16);
+}
+.rr td:first-child::before {
+  background: #ea1a85;
+}
+
+/* Sunrisers Hyderabad */
+.srh {
+  background: rgba(255, 130, 42, 0.16);
+}
+.srh td:first-child::before {
+  background: #ff822a;
+}
+
+/* Delhi Capitals */
+.dc {
+  background: rgba(23, 68, 155, 0.16);
+}
+.dc td:first-child::before {
+  background: #17449b;
+}
+
+/* Lucknow Super Giants */
+.lsg {
+  background: rgba(0, 170, 255, 0.16);
+}
+.lsg td:first-child::before {
+  background: #00aaff;
+}
+
+/* Gujarat Titans */
+.gt {
+  background: rgba(28, 28, 28, 0.06);
+}
+.gt td:first-child::before {
+  background: #1c1c1c;
+}
+
+/* Punjab Kings */
+.pbks {
+  background: rgba(237, 27, 36, 0.16);
+}
+.pbks td:first-child::before {
+  background: #ed1b24;
 }

@@ -58,18 +58,27 @@ if (!empty($team)) {
                 <tbody>
                     <?php if (!empty($matches)): ?>
                         <?php foreach ($matches as $match): ?>
-                            <tr>
-                                <td><?php echo date("d", strtotime($match['date'])) . "&nbsp;" . date("M", strtotime($match['date'])); ?></td>
-                                <td><?php echo ($match['home_team'] === $team_short) ? $match['away_team'] : $match['home_team']; ?></td>
+                            <tr class="<?php echo strtolower($team_short); ?>">
+                                <!-- Date -->
+                                <td>
+                                    <?php echo date("d", strtotime($match['date'])) . "&nbsp;" . date("M", strtotime($match['date'])) . "&nbsp;" . date("Y", strtotime($match['date'])); ?>
+                                </td>
+                                <!-- Opponent -->
+                                <td><?php echo ($match['home_team'] === $team_short) ? $match['away_team'] : $match['home_team']; ?>
+                                </td>
+                                <!-- Venue -->
                                 <td><?php echo $match['venue']; ?></td>
-                                <td><?php
+                                <!-- Toss -->
+                                <td>
+                                    <?php
                                     if (empty($match['toss']) || empty($match['decision'])) {
                                         echo "No Toss";
                                     } else {
-                                        echo $match['toss'] . " decided to " . $match['decision'] . " first";
+                                        echo $match['toss'] . " chose to " . $match['decision'];
                                     }
                                     ?>
                                 </td>
+                                <!-- Result -->
                                 <td><?php echo $match['result']; ?></td>
                             </tr>
                         <?php endforeach; ?>

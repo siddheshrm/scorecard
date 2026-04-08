@@ -22,15 +22,16 @@ $query = "SELECT team_name,
 
 $result = $conn->query($query);
 
-$points_table = [];
+// Fetching data into an array
+$teams = [];
 if ($result->num_rows > 0) {
     while ($row = $result->fetch_assoc()) {
-        $points_table[] = $row;
+        $teams[] = $row;
     }
 }
 ?>
 
-<h2>Indian Premier League 2025</h2>
+<h2>Indian Premier League 2026</h2>
 <table>
     <tr>
         <th>#</th>
@@ -45,12 +46,39 @@ if ($result->num_rows > 0) {
         <th>Points</th>
         <th></th>
     </tr>
+
     <?php
+    // Mapping CSS classes to teams based on team_name
+    function formatTeamClass($name)
+    {
+        $map = [
+            "Chennai Super Kings" => "csk",
+            "Mumbai Indians" => "mi",
+            "Royal Challengers Bangalore" => "rcb",
+            "Kolkata Knight Riders" => "kkr",
+            "Rajasthan Royals" => "rr",
+            "Sunrisers Hyderabad" => "srh",
+            "Delhi Capitals" => "dc",
+            "Lucknow Supergiants" => "lsg",
+            "Gujarat Titans" => "gt",
+            "Punjab Kings" => "pbks"
+        ];
+
+        return $map[$name] ?? 'default-team';
+    }
+
     $position = 1;
 
-    foreach ($points_table as $team) {
+    // Loop through teams
+    foreach ($teams as $team) {
+        // Checks if team is positioned within top-4
         $row_class = $position <= 4 ? 'top-team' : '';
-        echo "<tr class='$row_class'>";
+
+        // Assigns CSS class based on team_name
+        $team_css_class = formatTeamClass($team['team_name']);
+
+        // 'team-row' is used to handle row click (opens team modal)
+        echo "<tr class='team-row $team_css_class $row_class'>";
         echo "<td>" . $position . "</td>";
         echo "<td class='team-info'><img src='" . $team['logo'] . "' alt='" . $team['team_name'] . "'>" . $team['team_name'] . "</td>";
         echo "<td>" . $team['matches_played'] . "</td>";
@@ -62,6 +90,7 @@ if ($result->num_rows > 0) {
         $nrr_display = ($team['nrr'] > 0) ? '+' . $team['nrr'] : $team['nrr'];
         echo "<td>" . $nrr_display . "</td>";
         echo "<td>" . $team['points'] . "</td>";
+
         // Embed team_name dynamically into the data-team attribute for JS access
         echo "<td><i class='fa-solid fa-caret-down dropdown-icon' data-team='" . $team['team_name'] . "'></i></td>";
         echo "</tr>";
