@@ -4,7 +4,25 @@ include 'config.php';
 
 // Pagination setup
 $limit = 8;
+
+// Total records count for pagination
+$total_sql = "SELECT COUNT(*) AS total FROM tournament_data";
+$total_result = $conn->query($total_sql);
+$total_row = $total_result->fetch_assoc();
+$total_records_fetched = $total_row['total'];
+
+// Total pages
+$total_pages = ceil($total_records_fetched / $limit);
+
+// Page safety
+// If page value is provided, take the maximum between its value and 1, OR use 1
 $page = isset($_GET['page']) ? max((int) $_GET['page'], 1) : 1;
+
+// Ensure valid pages range
+if ($page > $total_pages && $total_pages > 0) {
+    $page = $total_pages;
+}
+
 $offset = ($page - 1) * $limit; // Offset calculation
 
 // Query to get paginated records
@@ -13,14 +31,6 @@ $stmt = $conn->prepare($sql);
 $stmt->bind_param("ii", $limit, $offset);
 $stmt->execute();
 $result = $stmt->get_result();
-
-// Total records count for pagination
-$total_sql = "SELECT COUNT(*) AS total FROM tournament_data";
-$total_result = $conn->query($total_sql);
-$total_row = $total_result->fetch_assoc();
-$total_records_fetched = $total_row['total'];
-
-$total_pages = ceil($total_records_fetched / $limit); // Total pages required
 ?>
 
 <!DOCTYPE html>
