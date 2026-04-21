@@ -45,6 +45,29 @@ table th:last-child {
   width: 7.5%;
 }
 
+table td:nth-child(5),
+table th:nth-child(5) {
+  max-width: 250px;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+table td:nth-child(7),
+table th:nth-child(7) {
+  max-width: 400px;
+}
+
+table td:nth-child(2),
+table th:nth-child(2) {
+  max-width: 150px;
+}
+
+table td:nth-child(6),
+table th:nth-child(6) {
+  max-width: 140px;
+}
+
 .action-buttons {
   text-align: center;
 }
