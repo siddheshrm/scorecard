@@ -11,10 +11,31 @@ body {
   /* overflow: hidden; */
 }
 
-h2 {
+.header-container {
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  align-items: center;
+  margin: 30px 20px 15px;
+}
+
+.header-container h2 {
+  grid-column: 2;
+  margin: 0;
   text-align: center;
-  margin-top: 30px;
-  color: #333;
+}
+
+.filter-form {
+  grid-column: 3;
+  justify-self: end;
+}
+
+.filter-form select {
+  padding: 10px;
+  font-family: "Tuffy", sans-serif;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  font-size: 0.9rem;
+  cursor: pointer;
 }
 
 table {
@@ -60,7 +81,7 @@ table th:nth-child(7) {
 
 table td:nth-child(2),
 table th:nth-child(2) {
-  max-width: 150px;
+  max-width: 175px;
 }
 
 table td:nth-child(6),
