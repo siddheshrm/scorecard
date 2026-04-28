@@ -79,7 +79,36 @@ if (!empty($team)) {
                                     ?>
                                 </td>
                                 <!-- Result -->
-                                <td><?php echo $match['result']; ?></td>
+                                <td>
+                                    <?php
+                                    $result = $match['result'];
+
+                                    // CASE 1: matches not concluded (no 'won' in result)
+                                    if (stripos($result, 'won') === false) {
+                                        echo $result ?: "Ongoing";
+                                    } else {
+                                        // Check if team name exists in the result (case-insensitive search)
+                                        // Returns position or false
+                                        $isWin = stripos($result, $team) !== false;
+
+                                        // CASE 2: winning team is at the beginning (standard 'won by' format)
+                                        if (stripos($result, $team) === 0) {
+
+                                            // Extract margin (text after 'won by')
+                                            preg_match('/won by (.+)$/i', $result, $margin);
+                                            echo "Won by " . $margin[1];
+                                        } else {
+                                            // CASE 3: winning team NOT at beginning (Super Over results)
+                                            $relativeResult = preg_replace(
+                                                '/([A-Za-z\s]+?)\s+won\b/i',
+                                                $isWin ? ' Won' : ' Lost',
+                                                $result
+                                            );
+                                            echo $relativeResult;
+                                        }
+                                    }
+                                    ?>
+                                </td>
                             </tr>
                         <?php endforeach; ?>
                     <?php else: ?>
