@@ -29,6 +29,45 @@ if ($result->num_rows > 0) {
         $teams[] = $row;
     }
 }
+
+$maxMatches = 14;
+$qualifyingSpots = 4;
+
+// Calculate max possible points for each team
+foreach ($teams as &$team) {
+    $remaining = $maxMatches - $team['matches_played'];
+    $team['max_points'] = $team['points'] + ($remaining * 2);
+}
+
+/* After foreach with reference (&), $team still points to the last element.
+unset() removes this reference so future assignments don't overwrite it. */
+unset($team);
+
+// Determine qualification
+/* Using reference (&) so changes (like 'qualified') update the original $teams array */
+foreach ($teams as &$team) {
+    $canReachCount = 0;
+
+    foreach ($teams as $other) {
+        // Skip self comparison
+        if ($other['team_name'] === $team['team_name'])
+            continue;
+
+        // Core qualification check
+        // Check if the other team can still reach or exceed this team's current points
+        if ($other['max_points'] >= $team['points']) {
+            $canReachCount++;
+        }
+    }
+
+    // If at most 3 other teams can still reach --> guaranteed top 4
+    if ($canReachCount <= ($qualifyingSpots - 1)) {
+        $team['qualified'] = true;
+    } else {
+        $team['qualified'] = false;
+    }
+}
+unset($team);
 ?>
 
 <h2>Indian Premier League 2026</h2>
@@ -36,6 +75,7 @@ if ($result->num_rows > 0) {
     <tr>
         <th>#</th>
         <th>Team</th>
+        <th></th>
         <th>Matches</th>
         <th>Won</th>
         <th>Lost</th>
@@ -81,6 +121,13 @@ if ($result->num_rows > 0) {
         echo "<tr class='team-row $team_css_class $row_class'>";
         echo "<td>" . $position . "</td>";
         echo "<td class='team-info'><img src='" . $team['logo'] . "' alt='" . $team['team_name'] . "'>" . $team['team_name'] . "</td>";
+
+        echo "<td>";
+        if (!empty($team['qualified'])) {
+            echo "<span class='q-badge'>Q</span>";
+        }
+        echo "</td>";
+
         echo "<td>" . $team['matches_played'] . "</td>";
         echo "<td>" . $team['wins'] . "</td>";
         echo "<td>" . $team['losses'] . "</td>";
